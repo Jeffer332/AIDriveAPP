@@ -86,7 +86,7 @@ export default function RegisterScreen({ navigation }) {
         <View style={styles.form}>
           <View style={styles.logoContainer}>
             <Image 
-              source={require('../assets/logo.png')} 
+              source={require('../assets/logo2.png')} 
               style={styles.logo} 
             />
           </View>
@@ -128,13 +128,25 @@ export default function RegisterScreen({ navigation }) {
             style={styles.input}
             secureTextEntry
           />
+
+          {/* Barra de fortaleza */}
+          <View style={styles.passwordStrengthBarContainer}>
+            <View 
+              style={[
+                styles.passwordStrengthBar, 
+                {
+                  backgroundColor: passwordStrength === 'Débil' ? 'red' : passwordStrength === 'Media' ? 'orange' : 'green',
+                  width: passwordStrength === 'Débil' ? '33%' : passwordStrength === 'Media' ? '66%' : '100%'
+                }
+              ]}
+            />
+          </View>
+
           {/* Indicador de fortaleza */}
-          <Text style={[ 
-            styles.passwordStrength, 
-            { color: passwordStrength === 'Débil' ? 'red' : passwordStrength === 'Media' ? 'orange' : 'green' }
-          ]}>
+          <Text style={[styles.passwordStrength, { textAlign: 'left' }]}>
             Fortaleza: {passwordStrength}
           </Text>
+
           <TextInput 
             placeholder="Validar contraseña"
             value={confirmPassword}
@@ -158,7 +170,7 @@ const styles = StyleSheet.create({
   },
   banner: { 
     width: '100%', 
-    height: '50%', 
+    height: 250,  
     resizeMode: 'cover',
     position: 'absolute', 
     top: 0, 
@@ -168,13 +180,13 @@ const styles = StyleSheet.create({
     flexGrow: 1, 
     justifyContent: 'flex-start', 
     alignItems: 'center', 
-    paddingTop: '40%',  // Ajustamos para que no se solape con la imagen de fondo
+    paddingTop: '50%',  
   },
   form: { 
     width: '90%', 
     backgroundColor: 'white', 
     borderRadius: 15, 
-    padding: 20, 
+    padding: 20,  
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -186,30 +198,45 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: { 
-    width: 100, 
+    width: 100,  
     height: 100, 
     resizeMode: 'contain' 
   },
   input: { 
     width: '100%',
+    height: 45,  
+    fontSize: 16,  
     borderWidth: 1, 
-    borderColor: 'gray', 
-    borderRadius: 10, 
-    padding: 10, 
-    marginBottom: 15 
+    borderColor: '#ccc',  
+    borderRadius: 8,  
+    paddingLeft: 15,  
+    marginBottom: 12,  
   },
   passwordStrength: { 
-    marginBottom: 15 
+    fontSize: 14,  
+    marginBottom: 12,  
+  },
+  passwordStrengthBarContainer: {
+    width: '100%',
+    height: 10,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 5,
+    marginBottom: 10,
+  },
+  passwordStrengthBar: {
+    height: '100%',
+    borderRadius: 5,
   },
   button: { 
-    backgroundColor: 'blue', 
-    padding: 15, 
-    borderRadius: 10, 
+    backgroundColor: '#007AFF', 
+    padding: 16,  
+    borderRadius: 15,  
     alignItems: 'center', 
-    marginBottom: 20 
+    marginBottom: 20,
   },
   buttonText: { 
     color: 'white', 
+    fontSize: 16,  
     fontWeight: 'bold' 
   },
   buttonContainer: {
@@ -220,18 +247,19 @@ const styles = StyleSheet.create({
   },
   switchButton: { 
     width: '48%', 
-    padding: 15, 
-    borderRadius: 10, 
+    padding: 16,  
+    borderRadius: 15,  
     alignItems: 'center',
   },
   loginButton: { 
-    backgroundColor: '#b0b0b0', // Gris para el Login cuando estamos en la pantalla de registro
+    backgroundColor: '#d0d0d0', 
   },
   registerButton: { 
-    backgroundColor: '#0066cc', // Azul para el Registrar
+    backgroundColor: '#007AFF', 
   },
   switchButtonText: { 
     color: 'white', 
+    fontSize: 16,  
     fontWeight: 'bold' 
   },
 });
