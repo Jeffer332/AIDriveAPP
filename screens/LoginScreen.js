@@ -70,12 +70,12 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.buttonContainer}>
               <TouchableOpacity 
                 style={[styles.toggleButton, isLogin && styles.activeButton]} 
-                onPress={() => navigation.navigate('Login')}>
+                onPress={() => handleToggleScreen('login')}>
                 <Text style={styles.toggleButtonText}>Ingreso</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.toggleButton, !isLogin && styles.activeButton]} 
-                onPress={() => navigation.navigate('Register')}>
+                onPress={() => handleToggleScreen('register')}>
                 <Text style={styles.toggleButtonText}>Registro</Text>
               </TouchableOpacity>
             </View>
@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     flex: 1, 
     backgroundColor: '#f8f8f8', 
     alignItems: 'center',
-    paddingTop: 0  // Eliminado margen superior
+    paddingTop: 0 
   },
   banner: { 
     width: '100%', 
-    height: '50%', 
+    height: 250,  // Ajusté el tamaño para una visualización más acorde
     resizeMode: 'cover', 
   },
   formContainer: { 
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1, 
     shadowOffset: { width: 0, height: 4 },
     shadowRadius: 10, 
-    marginTop: -40, // Este valor se puede ajustar si necesitas que esté aún más arriba
+    marginTop: -40, 
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   logo: { 
-    width: 120,  // Aumentamos el tamaño del logo
+    width: 120,  
     height: 120, 
     marginBottom: 20,
     alignSelf: 'center',
@@ -190,3 +190,4 @@ const styles = StyleSheet.create({
     fontWeight: '600' 
   },
 });
+
