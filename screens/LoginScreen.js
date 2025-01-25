@@ -71,7 +71,7 @@ export default function LoginScreen({ navigation }) {
               <TouchableOpacity 
                 style={[styles.toggleButton, isLogin && styles.activeButton]} 
                 onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.toggleButtonText}>Login</Text>
+                <Text style={styles.toggleButtonText}>Ingreso</Text>
               </TouchableOpacity>
               <TouchableOpacity 
                 style={[styles.toggleButton, !isLogin && styles.activeButton]} 
