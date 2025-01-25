@@ -62,7 +62,7 @@ export default function LoginScreen({ navigation }) {
           <View style={styles.formContainer}>
             {/* Logo sobre los botones y más grande */}
             <Image 
-              source={require('../assets/logo.png')} 
+              source={require('../assets/logo2.png')} 
               style={styles.logo} 
             />
 
