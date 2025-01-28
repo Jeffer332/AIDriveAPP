@@ -1,0 +1,5 @@
+pip install fastapi uvicorn
+pip install pydantic
+pip install -q -U google-generativeai
+pip install configparser
+pip install pandas
