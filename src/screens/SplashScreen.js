@@ -1,34 +1,37 @@
-// src/screens/SplashScreen.js
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+
+const { width, height } = Dimensions.get("window");
 
 const SplashScreen = ({ navigation }) => {
   return (
     <LinearGradient 
       colors={['#2A1943', '#38303B', '#120A19']} 
-      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+      style={{ flex: 1 }}
     >
-      <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
-        
+      <View style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20 }}>
 
-        {/* Imagen principal */}
-        <Image
-          source={require('../../assets/car.png')}
-          style={{ width: 350, height: 350, maxWidth: '100%' }}
-          resizeMode="contain"
-        />
+        {/* Contenedor de la imagen */}
+        <View style={{ width: width, height: height * 0.5, justifyContent: 'center', alignItems: 'center', marginTop: height * 0.07 }}>
+          <Image
+            source={require('../../assets/car.png')}
+            style={{ width: width * 0.8, maxWidth: 500, height: '100%', resizeMode: 'contain' }}
+          />
+        </View>
 
-        {/* Textos de bienvenida */}
-        <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
-          Conduce tus sueños
-        </Text>
-        <Text style={{ color: '#aaa', fontSize: 16, textAlign: 'center', marginBottom: 20 }}>
-          La manera más fácil de encontrar el auto que siempre has deseado.
-        </Text>
+        {/* Textos de bienvenida - Subidos hacia la imagen */}
+        <View style={{ width: '100%', alignItems: 'center', marginBottom: 50, marginTop: -20 }}>
+          <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
+            Conduce tus sueños
+          </Text>
+          <Text style={{ color: '#aaa', fontSize: 16, textAlign: 'center', paddingHorizontal: 5 }}>
+            La manera más fácil de encontrar el auto que siempre has deseado.
+          </Text>
+        </View>
 
-        {/* Botón de continuar */}
+        {/* Botón de continuar - Subido un poco */}
         <TouchableOpacity 
           onPress={() => navigation.navigate('AsistenteVirtual')} 
           style={{
@@ -42,14 +45,16 @@ const SplashScreen = ({ navigation }) => {
             shadowOffset: { width: 0, height: 2 },
             shadowOpacity: 0.3,
             shadowRadius: 4,
+            marginBottom: 100,  // Reducimos el espacio para subir el botón
+            marginTop: -10,  // Levantamos el botón
           }}
         >
           <Ionicons name="arrow-forward" size={24} color="#ffffff" />
         </TouchableOpacity>
+
       </View>
     </LinearGradient>
   );
 };
 
 export default SplashScreen;
-
