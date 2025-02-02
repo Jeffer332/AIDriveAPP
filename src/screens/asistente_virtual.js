@@ -12,45 +12,37 @@ import {
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
-import * as Clipboard from "expo-clipboard"; //Copiar texto de mensajes
+import * as Clipboard from "expo-clipboard";
 import * as Speech from "expo-speech";
 import { getAutoRecommendation } from "../services/api";
 
 const BOT_IMAGE = require("../../assets/perfil_av.png");
 
-// Componentes principales de AsistenteVirtual
 const AsistenteVirtual = ({ navigation }) => {
-  // Estados para manejar los mensajes y la entrada de texto
-  const [messages, setMessages] = useState([]); // Almacena los mensajes de la lista
-  const [inputText, setInputText] = useState(""); // Texto ingresado
-  const [isSpeaking, setIsSpeaking] = useState(false); // Estado si esl bot esta hablando
-  const [isTyping, setIsTyping] = useState(false); // Estado de si esta escribiendo...
-  // Scroll automático al final del mensaje
+  const [messages, setMessages] = useState([]);
+  const [inputText, setInputText] = useState("");
+  const [speakingMessage, setSpeakingMessage] = useState(null); // Control individual de cada mensaje
+  const [isTyping, setIsTyping] = useState(false);
   const flatListRef = useRef(null);
-  // Efecto del scroll
+
   useEffect(() => {
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
     }, 300);
   }, [messages]);
 
-
-  // Función para enviar mensajes
   const sendMessage = async () => {
-    if (!inputText.trim()) return; // No se envia mensajes vacios
+    if (!inputText.trim()) return;
 
-    // Mensaje del usuario a la lista
     const userMessage = { sender: "user", text: inputText };
     setMessages((prev) => [...prev, userMessage]);
-    setInputText(""); // Limpia entrada de texto
-    setIsTyping(true); // Estado escribiendo..
+    setInputText("");
+    setIsTyping(true);
 
     try {
-      // Obtine recomendación de la api
       const response = await getAutoRecommendation(inputText);
       setTimeout(() => {
         setIsTyping(false);
-        // Agregar mensjae de respuesta del bot
         setMessages((prev) => [...prev, { sender: "bot", text: response.sugerencias }]);
       }, 1000);
     } catch (error) {
@@ -59,68 +51,53 @@ const AsistenteVirtual = ({ navigation }) => {
     }
   };
 
-
-  // Función para copiar texto
   const copyToClipboard = (text) => {
     Clipboard.setStringAsync(text);
     ToastAndroid.show("Texto copiado al portapapeles", ToastAndroid.SHORT);
   };
 
-  // Función para activar de texto a voz
-  const toggleSpeakMessage = (text) => {
-    if (isSpeaking) {
-      Speech.stop(); // Detener si esta hablando
-      setIsSpeaking(false);
+  const toggleSpeakMessage = (text, index) => {
+    if (speakingMessage === index) {
+      Speech.stop();
+      setSpeakingMessage(null);
     } else {
       Speech.speak(text, {
         language: "es",
-        pitch: 1, // tono de voz
-        rate: 1, //Velocidad
-        onDone: () => setIsSpeaking(false),
-        onStopped: () => setIsSpeaking(false),
+        pitch: 1,
+        rate: 1,
+        onDone: () => setSpeakingMessage(null),
+        onStopped: () => setSpeakingMessage(null),
       });
-      setIsSpeaking(true);
+      setSpeakingMessage(index);
     }
   };
 
-
-  // Función para agregar mensajes en la posición que corresponda
-  const renderMessage = ({ item }) => (
-    <View className={`flex-row items-start mb-2 ${item.sender === "user" ? "justify-end" : "justify-start"}`}>
+  const renderMessage = ({ item, index }) => (
+    <View style={{ flexDirection: item.sender === "user" ? "row-reverse" : "row", marginVertical: 6, paddingHorizontal: 12 }}>
       {item.sender === "bot" && (
         <Image source={BOT_IMAGE} style={{ width: 28, height: 28, borderRadius: 14, marginRight: 6 }} />
       )}
-      <View style={{ flexDirection: "row", alignItems: "center", maxWidth: "75%" }}>
-        <View
-          style={{
-            padding: 10,
-            borderRadius: 18,
-            backgroundColor: item.sender === "user" ? "#3b3033" : "#38303B",
-            borderWidth: 1,
-            borderColor: item.sender === "user" ? "#2A1943" : "#0583F2",
-            alignSelf: item.sender === "user" ? "flex-end" : "flex-start",
-            flexShrink: 1,
-          }}
-        >
-          {item.sender === "bot" && !item.isTyping && (
-            <Text style={{ color: "#a1a1aa", fontSize: 14, marginBottom: 2 }}>AIDrive</Text>
-          )}
-          {item.isTyping ? (
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <ActivityIndicator size="small" color="#ffffff" />
-              <Text style={{ color: "white", fontSize: 12, marginLeft: 4 }}>AIDrive está escribiendo...</Text>
-            </View>
-          ) : (
-            <Text style={{ color: "white", fontSize: 13 }}>{item.text}</Text>
-          )}
-        </View>
+      <View style={{ backgroundColor: item.sender === "user" ? "#3b3033" : "#38303B", padding: 10, borderRadius: 10, maxWidth: "75%" }}>
         {item.sender === "bot" && !item.isTyping && (
-          <View style={{ flexDirection: "column", alignItems: "center", alignSelf: "center", marginLeft: 12 }}>
-            <TouchableOpacity onPress={() => toggleSpeakMessage(item.text)} style={{ padding: 4, backgroundColor: "#8A76B5", borderRadius: 5, width: 22, height: 22, justifyContent: "center", alignItems: "center", marginBottom: 8 }}>
-              <Ionicons name={isSpeaking ? "volume-mute" : "volume-high"} size={14} color="#ffffff" />
+          <Text style={{ color: "#a1a1aa", fontSize: 12, marginBottom: 4 }}>AIDrive</Text>
+        )}
+        {item.isTyping ? (
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <ActivityIndicator size="small" color="#ffffff" />
+            <Text style={{ color: "white", fontSize: 12, marginLeft: 4 }}>AIDrive está escribiendo...</Text>
+          </View>
+        ) : (
+          <Text style={{ color: "white", fontSize: 14 }}>{item.text}</Text>
+        )}
+
+        {/* Botones de Voz y Copiar */}
+        {item.sender === "bot" && !item.isTyping && (
+          <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 5 }}>
+            <TouchableOpacity onPress={() => toggleSpeakMessage(item.text, index)} style={{ marginRight: 10 }}>
+              <Ionicons name={speakingMessage === index ? "volume-mute" : "volume-high"} size={18} color="#ffffff" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => copyToClipboard(item.text)} style={{ padding: 4, backgroundColor: "#8A76B5", borderRadius: 5, width: 22, height: 22, justifyContent: "center", alignItems: "center" }}>
-              <Ionicons name="copy" size={14} color="#ffffff" />
+            <TouchableOpacity onPress={() => copyToClipboard(item.text)}>
+              <Ionicons name="copy" size={18} color="#ffffff" />
             </TouchableOpacity>
           </View>
         )}
@@ -129,30 +106,47 @@ const AsistenteVirtual = ({ navigation }) => {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-[#1a1a2e]">
-      <LinearGradient colors={["#2E1E42", "#3F2C59", "#1F1724"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }} className="pb-4 rounded-b-2xl shadow-lg">
-        <View className="flex-row items-center justify-between px-4 pt-8">
-          <TouchableOpacity onPress={() => navigation.goBack()} className="p-1">
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#1a1a2e" }}>
+      {/* Encabezado con Gradiente */}
+      <LinearGradient
+        colors={["#2E1E42", "#3F2C59", "#1F1724"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ paddingBottom: 16, borderBottomLeftRadius: 15, borderBottomRightRadius: 15, elevation: 4 }}
+      >
+        <View style={{ flexDirection: "row", justifyContent: "space-between", paddingHorizontal: 16, paddingTop: 32 }}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={{ padding: 8 }}>
             <Ionicons name="arrow-back" size={22} color="#ffffff" />
           </TouchableOpacity>
-          <Text className="text-white text-lg font-bold">AIDrive</Text>
-          <TouchableOpacity className="p-1">
+          <Text style={{ color: "white", fontSize: 18, fontWeight: "bold" }}>AIDrive</Text>
+          <TouchableOpacity style={{ padding: 8 }}>
             <Ionicons name="ellipsis-horizontal" size={22} color="#ffffff" />
           </TouchableOpacity>
         </View>
-        {/* 🔹 AGREGADO: Slogan debajo del título */}
-        <View className="items-center mt-1">
-          <Text className="text-white text-sm opacity-75">Conduce tus sueños, hazlos realidad...</Text>
+        <View style={{ alignItems: "center", marginTop: 4 }}>
+          <Text style={{ color: "white", fontSize: 14, opacity: 0.75 }}>Conduce tus sueños, hazlos realidad...</Text>
         </View>
       </LinearGradient>
+
+      {/* Lista de mensajes */}
       <FlatList 
-      ref={flatListRef} 
-      data={messages.concat(isTyping ? [{ sender: "bot", text: "escribiendo...", isTyping: true }] : [])} 
-      keyExtractor={(item, index) => index.toString()} renderItem={renderMessage} 
-      className="flex-1 px-3 py-1" contentContainerStyle={{ paddingTop: 14 }}/>
-      <View className="flex-row items-center px-4 py-3 mx-4 mb-4 bg-[#2e2e52] rounded-full shadow-md">
-        <TextInput className="flex-1 px-4 py-2 text-white text-md bg-[#4e4e7a] rounded-full" placeholder="Escribe tu mensaje..." placeholderTextColor="#aaaaaa" value={inputText} onChangeText={setInputText} />
-        <TouchableOpacity onPress={sendMessage} className="ml-3 p-3 bg-[#007aff] rounded-full">
+        ref={flatListRef} 
+        data={messages.concat(isTyping ? [{ sender: "bot", text: "escribiendo...", isTyping: true }] : [])} 
+        keyExtractor={(item, index) => index.toString()} 
+        renderItem={renderMessage} 
+        contentContainerStyle={{ paddingTop: 14 }}
+      />
+
+      {/* Barra de entrada de texto */}
+      <View style={{ flexDirection: "row", alignItems: "center", paddingHorizontal: 16, paddingVertical: 12, backgroundColor: "#2e2e52", borderRadius: 50, margin: 16 }}>
+        <TextInput
+          style={{ flex: 1, paddingHorizontal: 16, paddingVertical: 8, color: "white", backgroundColor: "#4e4e7a", borderRadius: 50 }}
+          placeholder="Escribe tu mensaje..."
+          placeholderTextColor="#aaaaaa"
+          value={inputText}
+          onChangeText={setInputText}
+        />
+        <TouchableOpacity onPress={sendMessage} style={{ marginLeft: 12, padding: 12, backgroundColor: "#007aff", borderRadius: 50 }}>
           <Ionicons name="send" size={18} color="#ffffff" />
         </TouchableOpacity>
       </View>
@@ -161,4 +155,3 @@ const AsistenteVirtual = ({ navigation }) => {
 };
 
 export default AsistenteVirtual;
-
