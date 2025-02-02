@@ -1,3 +1,4 @@
+// src/screens/SplashScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -5,28 +6,43 @@ import { Ionicons } from '@expo/vector-icons';
 
 const SplashScreen = ({ navigation }) => {
   return (
-    <LinearGradient colors={['#2A1943', '#38303B', '#120A19']} className="flex-1 justify-center items-center">
-      <View className="items-center justify-center px-5">
+    <LinearGradient 
+      colors={['#2A1943', '#38303B', '#120A19']} 
+      style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+    >
+      <View style={{ alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 }}>
+        
+
         {/* Imagen principal */}
-        <View className="justify-center items-center -mb-12">
-          <Image
-            source={require('../../assets/car.png')}
-            className="w-[350px] h-[350px] max-w-full" //Imagen del centro y manteniendo la calidad
-            resizeMode="contain"
-          />
-        </View>
+        <Image
+          source={require('../../assets/car.png')}
+          style={{ width: 350, height: 350, maxWidth: '100%' }}
+          resizeMode="contain"
+        />
 
         {/* Textos de bienvenida */}
-        <Text className="text-white text-2xl font-bold text-center mb-2">Conduce tus sueños</Text>
-        <Text className="text-gray-400 text-lg text-center leading-6 mb-6">
+        <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
+          Conduce tus sueños
+        </Text>
+        <Text style={{ color: '#aaa', fontSize: 16, textAlign: 'center', marginBottom: 20 }}>
           La manera más fácil de encontrar el auto que siempre has deseado.
         </Text>
 
         {/* Botón de continuar */}
         <TouchableOpacity 
           onPress={() => navigation.navigate('AsistenteVirtual')} 
-          className="w-16 h-16 bg-[#8A76B5] rounded-full items-center justify-center shadow-md"
-          
+          style={{
+            width: 64,
+            height: 64,
+            backgroundColor: '#8A76B5',
+            borderRadius: 32,
+            alignItems: 'center',
+            justifyContent: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+          }}
         >
           <Ionicons name="arrow-forward" size={24} color="#ffffff" />
         </TouchableOpacity>
@@ -36,3 +52,4 @@ const SplashScreen = ({ navigation }) => {
 };
 
 export default SplashScreen;
+
