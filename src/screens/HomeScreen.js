@@ -74,7 +74,7 @@ const HomeScreen = () => {
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
           <Ionicons name="home" size={30} color="#006600" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Chat')}>
+        <TouchableOpacity onPress={() => navigation.navigate('SplashScreen')}>
           <Ionicons name="chatbubble-ellipses" size={30} color="#006600" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
