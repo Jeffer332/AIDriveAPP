@@ -11,7 +11,6 @@ import HomeScreen from './src/screens/HomeScreen';
 // Pantallas para el asistente virtual
 import SplashScreen from './src/screens/SplashScreen';
 import AsistenteVirtual from './src/screens/asistente_virtual';
-import "./global.css";
 
 
 const Stack = createStackNavigator();
