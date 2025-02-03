@@ -3,4 +3,4 @@ pip install pydantic
 pip install -q -U google-generativeai
 pip install configparser
 pip install pandas
-python-dotenv
+pip install python-dotenv

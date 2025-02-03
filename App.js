@@ -11,6 +11,8 @@ import HomeScreen from './src/screens/HomeScreen';
 // Pantallas para el asistente virtual
 import SplashScreen from './src/screens/SplashScreen';
 import AsistenteVirtual from './src/screens/asistente_virtual';
+import CameraScreen from './src/screens/CameraScreen'
+
 
 
 const Stack = createStackNavigator();
@@ -31,6 +33,8 @@ const App = () => {
         <Stack.Screen name="SplashScreen" component={SplashScreen} />
         {/* Pantalla del Asistente Virtual */}
         <Stack.Screen name="AsistenteVirtual" component={AsistenteVirtual} />
+         {/* Pantalla de la cámara */}
+         <Stack.Screen name="Camera" component={CameraScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

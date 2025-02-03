@@ -6,6 +6,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import os
 import json
+import uvicorn
 
 # Cargar variables de entorno
 load_dotenv()
@@ -21,8 +22,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Obtener la ruta absoluta del archivo actual (AsistenteVirtual.py)
+base_dir = os.path.dirname(os.path.abspath(__file__))  # Obtiene el directorio donde está el archivo AsistenteVirtual.py
+
+# Crear la ruta completa hacia el archivo autos_ficha_tecnica.csv dentro de la carpeta 'datos_autos'
+csv_file = os.path.join(base_dir, 'datos_autos', 'autos_ficha_tecnica.csv')  # Combina el directorio base con la carpeta y el archivo CSV
+
+
 # Cargar datos del CSV en memoria
-csv_file = "C:/Users/paote/AsistenteVirtual_AI/FastApi_AIDrive/datos_autos/autos_ficha_tecnica.csv"
+#csv_file = "../autos_ficha_tecnica.csv"
 try:
     df = pd.read_csv(csv_file)
 except FileNotFoundError:
@@ -90,4 +98,7 @@ async def recomendar_auto(request: AutoRequest):
         raise HTTPException(status_code=500, detail=f"Error al comunicarse con Gemini: {str(e)}")
 
     return AutoResponse(sugerencias=resultado)
+# Configuración de ejecución del servidor con IP y puerto específicos
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
 
