@@ -64,36 +64,37 @@ const AsistenteVirtual = ({ navigation }) => {
     }
   };
 
+
   // Función para copiar mensaje
   const copyToClipboard = (text) => {
     Clipboard.setStringAsync(text);
     ToastAndroid.show("Texto copiado al portapapeles", ToastAndroid.SHORT);
   };
-
-  // Función para alternar la reproducción de voz
+  // Función para texto a voz
   const toggleSpeakMessage = (text, index) => {
     if (speakingMessage === index) {
       Speech.stop();
       setSpeakingMessage(null);
     } else {
-      // Limpia Markdown antes de la conversión de voz
+      // 🔹 LIMPIAR TEXTO Markdown antes de la conversión de voz
       let cleanText = text
-        .replace(/\*\*(.*?)\*\*/g, "$1") // Quita **negrita**
-        .replace(/\*(.*?)\*/g, "$1") // Quita *cursiva*
+        .replace(/\*\*(.*?)\*\*/g, "$1")  // Quita **negrita**
+        .replace(/\*(.*?)\*/g, "$1")      // Quita *cursiva*
         .replace(/^[-•*]\s+/gm, "")       // Quita viñetas como "- ", "• ", "* "
-        .replace(/\n/g, " "); // Quita saltos de línea
-
+        .replace(/\n/g, " ");             // Quita saltos de línea
+  
       Speech.speak(cleanText, {
         language: "es",
-        pitch: 1, // Tono de voz
-        rate: 1, // velocidad
+        pitch: 1,
+        rate: 1,
         onDone: () => setSpeakingMessage(null),
         onStopped: () => setSpeakingMessage(null),
       });
-
+  
       setSpeakingMessage(index);
     }
   };
+
 
   // Función para mandar los mensajes al lado de la lista
   const renderMessage = ({ item, index }) => (
