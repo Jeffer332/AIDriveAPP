@@ -101,4 +101,3 @@ async def recomendar_auto(request: AutoRequest):
 # Configuración de ejecución del servidor con IP y puerto específicos
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
-

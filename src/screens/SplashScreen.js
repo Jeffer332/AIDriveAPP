@@ -14,7 +14,7 @@ const SplashScreen = ({ navigation }) => {
       <View style={{ flex: 1, justifyContent: 'space-around', alignItems: 'center', paddingHorizontal: 20 }}>
 
         {/* Contenedor de la imagen */}
-        <View style={{ width: width, height: height * 0.5, justifyContent: 'center', alignItems: 'center', marginTop: height * 0.07 }}>
+        <View style={{ width: width, height: height * 0.9, justifyContent: 'center', alignItems: 'center', marginTop: height * 0.07 }}>
           <Image
             source={require('../../assets/car.png')}
             style={{ width: width * 0.8, maxWidth: 500, height: '100%', resizeMode: 'contain' }}
@@ -22,11 +22,11 @@ const SplashScreen = ({ navigation }) => {
         </View>
 
         {/* Textos de bienvenida - Subidos hacia la imagen */}
-        <View style={{ width: '100%', alignItems: 'center', marginBottom: 50, marginTop: -20 }}>
-          <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
+        <View style={{ width: '100%', alignItems: 'center', marginBottom: 30, marginTop: -300 }}>
+          <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10 }}>
             Conduce tus sueños
           </Text>
-          <Text style={{ color: '#aaa', fontSize: 16, textAlign: 'center', paddingHorizontal: 5 }}>
+          <Text style={{ color: '#aaa', fontSize: 14, textAlign: 'center', paddingHorizontal: 8 }}>
             La manera más fácil de encontrar el auto que siempre has deseado.
           </Text>
         </View>
