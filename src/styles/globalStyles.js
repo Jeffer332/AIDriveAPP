@@ -12,7 +12,7 @@ const globalStyles = StyleSheet.create({
     color: '#333',
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#0583F2',
     padding: 10,
     borderRadius: 20,
     marginTop: 15,

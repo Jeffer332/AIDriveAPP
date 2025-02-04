@@ -30,7 +30,7 @@ csv_file = os.path.join(base_dir, 'datos_autos', 'autos_ficha_tecnica.csv')  # C
 
 
 # Cargar datos del CSV en memoria
-#csv_file = "../autos_ficha_tecnica.csv"
+csv_file = "../autos_ficha_tecnica.csv"
 try:
     df = pd.read_csv(csv_file)
 except FileNotFoundError:

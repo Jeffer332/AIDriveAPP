@@ -56,7 +56,7 @@ const RegisterScreenStyles = StyleSheet.create({
     textAlign: 'left', // Alineación a la izquierda
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: '#0583F2',
     padding: 20,
     borderRadius: 5,
     width: '100%',

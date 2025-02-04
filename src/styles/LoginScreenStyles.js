@@ -36,7 +36,7 @@ const LoginScreenStyles = StyleSheet.create({
   },
   button: {
     flex: 1,
-    backgroundColor: '#007BFF',
+    backgroundColor: '#0583F2',
     padding: 15,
     borderRadius: 10,
     marginHorizontal: 5,
@@ -44,7 +44,7 @@ const LoginScreenStyles = StyleSheet.create({
   },
   button2: {
     flex: 1,
-    backgroundColor: '#8c8c8c',
+    backgroundColor: '#494C73',
     padding: 15,
     borderRadius: 10,
     marginHorizontal: 5,
