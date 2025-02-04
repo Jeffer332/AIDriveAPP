@@ -129,7 +129,7 @@ const AsistenteVirtual = ({ navigation }) => {
               <Ionicons name={speakingMessage === index ? "volume-mute" : "volume-high"} size={18} color="#ffffff" />
             </TouchableOpacity>
             {/* Botón para copiar el mensaje*/}
-            <TouchableOpacity onPress={() => copyToClipboard(item.sugerencias)}>
+            <TouchableOpacity onPress={() => copyToClipboard(item.text)}>
               <Ionicons name="copy" size={18} color="#ffffff" />
             </TouchableOpacity>
           </View>

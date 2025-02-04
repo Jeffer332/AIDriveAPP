@@ -88,7 +88,7 @@ async def recomendar_auto(request: AutoRequest):
             final_prompt,
             generation_config={  #Parámetros de control de generación
                 "temperature": 0.8,  # Controla la creatividad
-                "max_output_tokens": 300,  # Longitud de la respuesta
+                "max_output_tokens": 1000,  # Longitud de la respuesta
                 "top_p": 0.9,  # Control de aleatoriedad
                 "top_k": 40  # Filtro de palabras más probables
             }
