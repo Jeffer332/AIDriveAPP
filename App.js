@@ -13,8 +13,7 @@ import DViewScreen from './src/screens/DView';
 import SplashScreen from './src/screens/SplashScreen';
 import AsistenteVirtual from './src/screens/asistente_virtual';
 import CameraScreen from './src/screens/CameraScreen'
-
-
+import "./global.css";
 
 const Stack = createStackNavigator();
 

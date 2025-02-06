@@ -36,7 +36,7 @@
     "react-native-keyboard-aware-scroll-view": "^0.9.5",
     "react-native-markdown-display": "^7.0.2",
     "react-native-reanimated": "^3.16.7",
-    "react-native-safe-area-context": "^5.1.0",
+    "react-native-safe-area-context": "^5.2.0",
     "react-native-screens": "^4.5.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-stack": "^1.0.0-alpha11",
