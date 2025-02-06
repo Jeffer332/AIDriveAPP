@@ -1,5 +1,5 @@
 export const getAutoRecommendation = async (texto) => {
-  const url = 'http://172.20.10.2:8000/recomendar';
+  const url = 'http://192.168.100.8:8000/recomendar';
   const response = await fetch(url, {
     method: 'POST',
     headers: {

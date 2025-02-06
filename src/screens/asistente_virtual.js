@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Image,
   KeyboardAvoidingView,
+  Keyboard,
   Platform,
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
@@ -146,7 +147,7 @@ const AsistenteVirtual = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 90 : 0}
+      keyboardVerticalOffset={Platform.OS === "ios" ? 2 : 0}
       className="flex-1 bg-[#1a1a2e]"
     >
       <SafeAreaView className="flex-1">
@@ -192,12 +193,15 @@ const AsistenteVirtual = ({ navigation }) => {
             onChangeText={setInputText}
           />
           <TouchableOpacity
-            onPress={sendMessage}
-            disabled={!inputText.trim() || isTyping}
-            className={`ml-3 p-3 rounded-full ${!inputText.trim() || isTyping ? "bg-gray-500 opacity-50" : "bg-[#007aff]"}`}
-          >
-            <Ionicons name="send" size={18} color="#ffffff" />
-          </TouchableOpacity>
+        onPress={() => {
+          sendMessage();
+          Keyboard.dismiss(); // Cierra el teclado al enviar el mensaje
+        }}
+        disabled={!inputText.trim() || isTyping}
+        className={`ml-3 p-3 rounded-full ${!inputText.trim() || isTyping ? "bg-gray-500 opacity-50" : "bg-[#007aff]"}`}
+      >
+        <Ionicons name="send" size={18} color="#ffffff" />
+      </TouchableOpacity>
         </View>
 
       </SafeAreaView>
