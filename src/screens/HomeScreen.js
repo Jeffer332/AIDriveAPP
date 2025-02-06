@@ -102,7 +102,7 @@ const HomeScreen = () => {
         {/* Tarjeta de Patio Tuerca */}
         <TouchableOpacity style={styles.card2} onPress={openWebsite}>
           <Image source={require('../../assets/patiotuerca.webp')} style={styles.cardImage} />
-          <Text style={styles.cardDescription}>
+          <Text style={styles.cardInfo}>
             Encuentra lo que necesitas para comprar o vender tu vehículo.
           </Text>
         </TouchableOpacity>
@@ -244,10 +244,9 @@ const styles = StyleSheet.create({
     padding: 5,
     marginVertical: 10,
     alignItems: 'center',
-    marginHorizontal: 5, // Espaciado horizontal entre tarjetas
     alignItems: 'center',
     width: 400, // Ancho fijo para las tarjetas
-    height: 250,
+    height: 270,
   },
   cardImage: {
     width: '100%',

@@ -9,7 +9,7 @@ const LoginScreenStyles = StyleSheet.create({
   },
   container: {
     width: '90%',
-    backgroundColor: 'white', // Cambia a blanco sin transparencia
+    backgroundColor: '#fff', // Cambia a blanco sin transparencia
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
@@ -21,7 +21,8 @@ const LoginScreenStyles = StyleSheet.create({
     position: 'absolute', // Cambiado a absolute para centrar el cuadro
     top: '40%', // Ajusta la posición vertical del cuadro
     left: '5%', // Centra horizontalmente
-    transform: [{ translateX: -0.5 * '90%' }], // Ajusta la posición horizontalmente
+    alignSelf: 'center', // Centra horizontalmente
+    //transform: [{ translateX: -0.5 * '90%' }], // Ajusta la posición horizontalmente
   },
   logo: {
     width: 100,
