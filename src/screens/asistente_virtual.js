@@ -43,8 +43,8 @@ const AsistenteVirtual = ({ navigation }) => {
     // Agrega el mensaje del usuario a la lista de mensajes
     const userMessage = { sender: "user", text: inputText };
     setMessages((prev) => [...prev, userMessage]);
-    setInputText(""); 
-    setIsTyping(true); 
+    setInputText("");
+    setIsTyping(true);
 
     try {
       // Llama a la API para obtener la respuesta del asistente virtual
@@ -191,7 +191,15 @@ const AsistenteVirtual = ({ navigation }) => {
             value={inputText}
             onChangeText={setInputText}
           />
+          <TouchableOpacity
+            onPress={sendMessage}
+            disabled={!inputText.trim() || isTyping}
+            className={`ml-3 p-3 rounded-full ${!inputText.trim() || isTyping ? "bg-gray-500 opacity-50" : "bg-[#007aff]"}`}
+          >
+            <Ionicons name="send" size={18} color="#ffffff" />
+          </TouchableOpacity>
         </View>
+
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
