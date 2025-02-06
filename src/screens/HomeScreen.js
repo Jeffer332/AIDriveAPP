@@ -152,16 +152,16 @@ const HomeScreen = () => {
       {/* Footer con Íconos */}
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="home" size={30} color="#191A2E" />
+          <Ionicons name="home" size={30} color="#494C73" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('SplashScreen')}>
-          <Ionicons name="chatbubble-ellipses" size={30} color="#191A2E" />
+          <Ionicons name="chatbubble-ellipses" size={30} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-          <Ionicons name="camera" size={30} color="#191A2E" />
+          <Ionicons name="camera" size={30} color="#fff" />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('DView')}>
-          <Ionicons name="logo-apple-ar" size={30} color="#191A2E" />
+          <Ionicons name="logo-apple-ar" size={30} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     padding: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#191A2E',
     elevation: 5,
     position: 'absolute',
     bottom: 0,

@@ -31,6 +31,9 @@ const Footer = ({ navigation }) => (
     <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
       <Ionicons name="camera" size={30} color="#fff" />
     </TouchableOpacity>
+    <TouchableOpacity onPress={() => navigation.navigate('DView')}>
+      <Ionicons name="logo-apple-ar" size={30} color="#494C73" />
+    </TouchableOpacity>
   </View>
 );
 
