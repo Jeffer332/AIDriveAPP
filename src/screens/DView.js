@@ -28,7 +28,7 @@ const Footer = ({ navigation }) => (
     <TouchableOpacity onPress={() => navigation.navigate('SplashScreen')}>
       <Ionicons name="chatbubble-ellipses" size={30} color="#fff" />
     </TouchableOpacity>
-    <TouchableOpacity onPress={() => navigation.navigate('DView')}>
+    <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
       <Ionicons name="camera" size={30} color="#fff" />
     </TouchableOpacity>
   </View>

@@ -99,6 +99,40 @@ async def recomendar_auto(request: AutoRequest):
         raise HTTPException(status_code=500, detail=f"Error al comunicarse con Gemini: {str(e)}")
 
     return AutoResponse(sugerencias=resultado)
+
+# cargar la imagen para que funcione el reconocimiento del vehículo
+class ImageData(BaseModel):
+    image: str  # Imagen en formato base64
+
+
+@app.post("/upload_image")
+def upload_image(data: ImageData):
+    modelo = genai.GenerativeModel('gemini-1.5-pro-latest')
+    image_data = data.image.split(';base64,')[-1]  # Extrae la parte base64
+    
+    image_content = {"inline_data": {"mime_type": "image/png", "data": image_data}}
+
+    # Enviar la imagen a Gemini para detección de vehículos
+    text_prompt = "¿La imagen proporcionada contiene un vehículo? Responde con 'sí' o 'no'."
+    response = modelo.generate_content([{"text": text_prompt},image_content])
+    print(response)
+
+    if "no" in response.text.lower():
+        return {"mensaje": "La imagen no es un vehículo"}
+    
+    description_prompt = """Identifica el vehículo de la imagen y proporciona los siguientes datos en formato JSON:
+              {
+                "marca": "Marca del vehículo",
+                "modelo": "Modelo del vehículo",
+                "año": "Año aproximado del vehículo"
+              }
+              """
+    description_response = modelo.generate_content([{"text": description_prompt},image_content ])
+    json_text = description_response.parts[0].text
+    json_string = json_text.replace("```json", "").replace("```", "")
+    print(json_string)
+    return {"descripcion": json_string}
+
 # Configuración de ejecución del servidor con IP y puerto específicos
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8000)
