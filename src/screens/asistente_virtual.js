@@ -1,4 +1,4 @@
-// src/screens/asistente_virtual.js
+// Importación de módulos y componentes necesarios
 import React, { useState, useRef, useEffect } from "react";
 import {
   View,
@@ -17,36 +17,41 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Ionicons } from "@expo/vector-icons";
 import * as Clipboard from "expo-clipboard";
 import * as Speech from "expo-speech";
-import Markdown from "react-native-markdown-display"; // Importa el Markdown
+import Markdown from "react-native-markdown-display";
 import { getAutoRecommendation } from "../services/api";
 
 const BOT_IMAGE = require("../../assets/perfil_av.png");
 
 const AsistenteVirtual = ({ navigation }) => {
-  const [messages, setMessages] = useState([]);
-  const [inputText, setInputText] = useState("");
-  const [speakingMessage, setSpeakingMessage] = useState(null);
-  const [isTyping, setIsTyping] = useState(false);
-  const flatListRef = useRef(null);
+  const [messages, setMessages] = useState([]); // Almacena los mensajes del chat
+  const [inputText, setInputText] = useState(""); // Estado del input de texto
+  const [speakingMessage, setSpeakingMessage] = useState(null); // Estado para el mensaje en reproducción de voz
+  const [isTyping, setIsTyping] = useState(false); // Estado para indicar si el bot está escribiendo
+  const flatListRef = useRef(null); // Referencia a la lista de mensajes para el autoscroll
 
+  // Efecto para hacer scroll automático al final cuando hay nuevos mensajes
   useEffect(() => {
     setTimeout(() => {
       flatListRef.current?.scrollToEnd({ animated: true });
     }, 300);
   }, [messages]);
 
+  // Función para enviar un mensaje
   const sendMessage = async () => {
-    if (!inputText.trim() || isTyping) return;
+    if (!inputText.trim() || isTyping) return; // Deshabilitado al escribir o vacio
 
+    // Agrega el mensaje del usuario a la lista de mensajes
     const userMessage = { sender: "user", text: inputText };
     setMessages((prev) => [...prev, userMessage]);
-    setInputText("");
-    setIsTyping(true);
+    setInputText(""); 
+    setIsTyping(true); 
 
     try {
+      // Llama a la API para obtener la respuesta del asistente virtual
       const response = await getAutoRecommendation(inputText);
       setTimeout(() => {
         setIsTyping(false);
+        // Respuesta del bot a la lista de mensajes
         setMessages((prev) => [
           ...prev,
           { sender: "bot", text: response.sugerencias },
@@ -61,20 +66,22 @@ const AsistenteVirtual = ({ navigation }) => {
     }
   };
 
+  // Función para copiar texto al portapapeles
   const copyToClipboard = (text) => {
     Clipboard.setStringAsync(text);
     ToastAndroid.show("Texto copiado al portapapeles", ToastAndroid.SHORT);
   };
 
-  // Función para limpiar el texto antes de hablar
+  // Función para limpiar el texto antes de convertirlo en voz
   const cleanMarkdownForSpeech = (text) => {
     return text
-      .replace(/\*\*(.*?)\*\*/g, "$1") // Quita **negrita**
-      .replace(/\*(.*?)\*/g, "$1") // Quita *cursiva*
-      .replace(/^[-•*]\s+/gm, "") // Quita viñetas
-      .replace(/\n/g, " "); // Quita saltos de línea
+      .replace(/\*\*(.*?)\*\*/g, "$1") // Elimina **negritas**
+      .replace(/\*(.*?)\*/g, "$1") // Elimina *cursivas*
+      .replace(/^[-•*]\s+/gm, "") // Elimina viñetas
+      .replace(/\n/g, " "); // Sustituye saltos de línea por espacios
   };
 
+  // Función para alternar la reproducción de voz del mensaje
   const toggleSpeakMessage = (text, index) => {
     if (speakingMessage === index) {
       Speech.stop();
@@ -92,28 +99,36 @@ const AsistenteVirtual = ({ navigation }) => {
     }
   };
 
+  // Función para renderizar cada mensaje en la lista
   const renderMessage = ({ item, index }) => (
     <View className={`flex-row ${item.sender === "user" ? "flex-row-reverse" : ""} my-2 px-3`}>
+      {/* Imagen del asistente virtual */}
       {item.sender === "bot" && (
         <Image source={BOT_IMAGE} className="w-7 h-7 rounded-full mr-2" />
       )}
+
+      {/* Contenedor del mensaje */}
       <View className={`p-3 rounded-lg ${item.sender === "user" ? "max-w-[75%]" : "w-[75%]"} ${item.sender === "user" ? "bg-[#3b3033]" : "bg-[#38303B]"}`}>
 
+        {/* Nombre del bot si el mensaje es del asistente virtual */}
         {item.sender === "bot" && !item.isTyping && (
           <Text className="text-xs text-gray-400 mb-1">AIDrive</Text>
         )}
+
+        {/* Mensaje de "escribiendo..." cuando el bot responde */}
         {item.isTyping ? (
           <View className="flex-row items-center">
             <ActivityIndicator size="small" color="#ffffff" />
             <Text className="text-xs text-white ml-2">AIDrive está escribiendo...</Text>
           </View>
         ) : (
-          // Muestra el mensaje con Markdown
+          // Muestra el mensaje con formato Markdown
           <Markdown style={{ body: { color: "white", fontSize: 12 } }}>
             {item.text}
           </Markdown>
         )}
 
+        {/* Botones de voz y copiar si el mensaje es del bot */}
         {item.sender === "bot" && !item.isTyping && (
           <View className="flex-row justify-end mt-2">
             <TouchableOpacity onPress={() => toggleSpeakMessage(item.text, index)} className="mr-3">
@@ -135,6 +150,7 @@ const AsistenteVirtual = ({ navigation }) => {
       className="flex-1 bg-[#1a1a2e]"
     >
       <SafeAreaView className="flex-1">
+        {/* Encabezado con gradiente */}
         <LinearGradient
           colors={["#2E1E42", "#3F2C59", "#1F1724"]}
           start={{ x: 0, y: 0 }}
@@ -155,6 +171,7 @@ const AsistenteVirtual = ({ navigation }) => {
           </View>
         </LinearGradient>
 
+        {/* Lista de mensajes */}
         <FlatList
           ref={flatListRef}
           data={messages.concat(isTyping ? [{ sender: "bot", text: "escribiendo...", isTyping: true }] : [])}
@@ -165,6 +182,7 @@ const AsistenteVirtual = ({ navigation }) => {
           keyboardDismissMode="interactive"
         />
 
+        {/* Barra de entrada de texto */}
         <View className="flex-row items-center px-4 py-3 bg-[#2e2e52] rounded-full m-4">
           <TextInput
             className="flex-1 px-4 py-3 text-white bg-[#4e4e7a] rounded-full text-xs"
@@ -173,9 +191,6 @@ const AsistenteVirtual = ({ navigation }) => {
             value={inputText}
             onChangeText={setInputText}
           />
-          <TouchableOpacity onPress={sendMessage} disabled={isTyping} className="ml-3 p-3 bg-[#007aff] rounded-full">
-            <Ionicons name="send" size={18} color="#ffffff" />
-          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>
