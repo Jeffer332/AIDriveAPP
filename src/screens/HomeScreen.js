@@ -1,22 +1,26 @@
 // src/screens/HomeScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import { auth } from '../services/firebase';
 import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
   const [userData, setUserData] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false); // Estado para controlar la visibilidad del menú
-  const db = getFirestore();
+  const [menuVisible, setMenuVisible] = useState(false);
+  const [autos, setAutos] = useState([]); // Estado para almacenar los autos
+  const [autosSecond, setAutosSecond] = useState([]); // Estado para almacenar los autos del segundo carrusel
+  const db = getDatabase();
+  const firestoreDb = getFirestore();
   const navigation = useNavigation();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = auth.currentUser  ;
+      const user = auth.currentUser ;
       if (user) {
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userDoc = await getDoc(doc(firestoreDb, 'users', user.uid));
         if (userDoc.exists()) {
           setUserData(userDoc.data());
         }
@@ -24,6 +28,36 @@ const HomeScreen = () => {
     };
 
     fetchUserData();
+
+    // Obtener datos de autos
+    const autosRef = ref(db, 'autos'); // Referencia a la colección "autos"
+    const unsubscribe = onValue(autosRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const autosArray = Object.keys(data) // Obtiene las claves únicas de los autos
+          .slice(9, 12) // Solo los primeros 6 registros
+          .map((key) => ({ id: key, ...data[key] })); // Convierte en un array de objetos
+
+        setAutos(autosArray);
+      }
+    });
+
+     // Obtener datos de autos para el segundo carrusel
+     const unsubscribeSecond = onValue(autosRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        const autosSecondArray = Object.keys(data) // Obtiene las claves únicas de los autos
+          .slice(15, 19) // Solo los registros del 16 al 18
+          .map((key) => ({ id: key, ...data[key] })); // Convierte en un array de objetos
+
+        setAutosSecond(autosSecondArray);
+      }
+    });
+
+    return () => {
+      unsubscribe(); // Limpieza del listener
+      unsubscribeSecond(); // Limpieza del segundo listener
+    };
   }, []);
 
   const handleLogout = () => {
@@ -65,12 +99,54 @@ const HomeScreen = () => {
 
       {/* Contenido Principal */}
       <ScrollView contentContainerStyle={styles.content}>
-        <TouchableOpacity style={styles.card} onPress={openWebsite}>
+        {/* Tarjeta de Patio Tuerca */}
+        <TouchableOpacity style={styles.card2} onPress={openWebsite}>
           <Image source={require('../../assets/patiotuerca.webp')} style={styles.cardImage} />
           <Text style={styles.cardDescription}>
-            Patio Tuerca es un lugar donde puedes encontrar todo lo que necesitas para tus proyectos de construcción y reparación.
+            Encuentra lo que necesitas para comprar o vender tu vehículo.
           </Text>
         </TouchableOpacity>
+
+        {/* Carrusel de autos */}
+        <FlatList
+          data={autos}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={{ uri: item.ImagenURL }} style={styles.cardImage} />
+              <View style={styles.cardInfo}>
+                <Text style={styles.cardTitle}>{`Marca: ${item.Marca || 'N/A'}`}</Text>
+                <Text style={styles.cardSubtitle}>{`Modelo: ${item.Modelo || 'N/A'}`}</Text>
+                <Text style={styles.cardDetails}>{`Año/Kms: ${item.AñoKms || 'N/A'}`}</Text>
+                <Text style={styles.cardPrice}>{`Precio: ${item.Precio || 'N/A'}`}</Text>
+                <Text style={styles.cardPlate}>{`Placa: ${item.Placa || 'N/A'}`}</Text>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.carousel}
+        />
+
+<FlatList
+          data={autosSecond}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Image source={{ uri: item.ImagenURL }} style={styles.cardImage} />
+              <View style={styles.cardInfo}>
+                <Text style={styles.cardTitle}>{`Marca: ${item.Marca || 'N/A'}`}</Text>
+                <Text style={styles.cardSubtitle}>{`Modelo: ${item.Modelo || 'N/A'}`}</Text>
+                <Text style={styles.cardDetails}>{`Año/Kms: ${item.AñoKms || 'N/A'}`}</Text>
+                <Text style={styles.cardPrice}>{`Precio: ${item.Precio || 'N/A'}`}</Text>
+                <Text style={styles.cardPlate}>{`Placa: ${item.Placa || 'N/A'}`}</Text>
+              </View>
+            </View>
+          )}
+          keyExtractor={(item) => item.id}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.carousel}
+        />
       </ScrollView>
 
       {/* Footer con Íconos */}
@@ -153,22 +229,61 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 10,
     elevation: 5,
-    padding: 0,
-    marginVertical: 20,
+    padding: 5,
+    marginVertical: 10,
     alignItems: 'center',
-    width: '90%',
+    marginHorizontal: 5, // Espaciado horizontal entre tarjetas
+    alignItems: 'center',
+    width: 400, // Ancho fijo para las tarjetas
+    height: 335,
+  },
+  card2: {
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    elevation: 5,
+    padding: 5,
+    marginVertical: 10,
+    alignItems: 'center',
+    marginHorizontal: 5, // Espaciado horizontal entre tarjetas
+    alignItems: 'center',
+    width: 400, // Ancho fijo para las tarjetas
+    height: 250,
   },
   cardImage: {
     width: '100%',
-    height: 150,
+    height: 200,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
-  cardDescription: {
+  cardInfo: {
+    padding: 10,
+    alignItems: 'flex-start',
+    textAlign: 'left', width: '90%'
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#191A2E',
+  },
+  cardSubtitle: {
     fontSize: 16,
-    textAlign: 'center',
-    marginVertical: 10,
-    paddingHorizontal: 10,
+    color: '#555',
+  },
+  cardDetails: {
+    fontSize: 14,
+    color: '#777',
+  },
+  cardPrice: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#28a745', // Color verde para el precio
+  },
+  cardPlate: {
+    fontSize: 14,
+    color: '#777',
+  },
+  carousel: {
+    paddingVertical: 10,
   },
   footer: {
     flexDirection: 'row',
