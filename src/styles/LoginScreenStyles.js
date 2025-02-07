@@ -4,69 +4,115 @@ import { StyleSheet } from 'react-native';
 const LoginScreenStyles = StyleSheet.create({
   background: {
     flex: 1,
-    justifyContent: 'flex-start', // Cambiado a flex-start para que la imagen esté en la parte superior
+  },
+  imageBackground: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+    justifyContent: 'center',
     alignItems: 'center',
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(48, 46, 46, 0.3)',
   },
   container: {
-    width: '90%',
-    backgroundColor: '#fff', // Cambia a blanco sin transparencia
-    borderRadius: 20,
+    width: '85%',
+    backgroundColor: 'rgba(22, 21, 21, 0.6)',
+    borderRadius: 15,
     padding: 20,
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    position: 'absolute', // Cambiado a absolute para centrar el cuadro
-    top: '40%', // Ajusta la posición vertical del cuadro
-    left: '5%', // Centra horizontalmente
-    alignSelf: 'center', // Centra horizontalmente
-    //transform: [{ translateX: -0.5 * '90%' }], // Ajusta la posición horizontalmente
+    justifyContent: 'center',
+    minHeight: 450, // Aumenta la altura del contenedor
+    paddingVertical: 30, // Más espacio interno
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 90,
+    marginBottom: 30,
+  },
+  welcomeText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
-  buttonContainer: {
+  inputContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    alignItems: 'center',
     width: '100%',
-    marginBottom: 20,
+    backgroundColor: 'transparent', // Fondo transparente
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#BCC1CAFF',
+    paddingHorizontal: 15,
+    height: 52,
+    marginBottom: 15,
   },
-  button: {
+  iconLeft: {
+    position: 'absolute',
+    left: 15,
+  },
+  iconRight: {
+    position: 'absolute',
+    right: 15,
+  },
+  input: {
     flex: 1,
+    color: '#FFFFFF', // Texto ingresado en color blanco
+    fontSize: 12,
+    lineHeight: 28,
+    fontWeight: '400',
+    paddingLeft: 30, // Espacio para el ícono izquierdo
+  },
+  disabledButton: {
+    backgroundColor: '#A7ADB7', // Color gris indicando inactividad
+  },
+  
+  forgotPasswordContainer: {
+    width: '100%',
+    alignItems: 'flex-end',
+    marginBottom: 15,
+  },
+  forgotPassword: {
+    color: '#0583F2',
+    fontSize: 14,
+    textAlign: 'right',
+  },
+  loginButton: {
     backgroundColor: '#0583F2',
     padding: 15,
     borderRadius: 10,
-    marginHorizontal: 5,
     alignItems: 'center',
-  },
-  button2: {
-    flex: 1,
-    backgroundColor: '#494C73',
-    padding: 15,
-    borderRadius: 10,
-    marginHorizontal: 5,
-    alignItems: 'center',
+    width: '100%',
+    marginBottom: 15,
   },
   buttonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  formContainer: {
-    width: '100%',
+  termsText: {
+    color: 'white',
+    fontSize: 10,
+    textAlign: 'center',
+    marginBottom: 10,
+    margin: 14,
   },
-  input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginBottom: 15,
+  linkText: {
+    color: '#0583F2',
+    fontWeight: 'bold',
   },
+  registerText: {
+    color: 'white',
+    fontSize: 14,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 11,
+    marginBottom: 9,
+    textAlign: 'center',
+  }  
 });
 
 export default LoginScreenStyles;
