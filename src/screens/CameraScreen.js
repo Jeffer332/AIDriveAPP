@@ -1,15 +1,13 @@
-// src/screens/CameraScreen.js
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Image } from "expo-image"
+import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Ionicons from '@expo/vector-icons/Ionicons';
-
 
 const CameraScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -84,43 +82,48 @@ const CameraScreen = ({ navigation }) => {
   };
 
   return (
-    <LinearGradient 
-      colors={['#2A1943', '#38303B', '#120A19']} 
+    <LinearGradient
+      colors={['#2A1943', '#38303B', '#120A19']}
       style={{ flex: 1 }}
     >
-    <Header/>
+      <Header />
       <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
+        {/* Contenedor de la cámara */}
         <View style={styles.cameraContainer}>
           <CameraView
             style={styles.camera}
             ref={(ref) => setCamera(ref)}
           />
         </View>
+        {/* Overlay de carga */}
         {loading && (
-            <View style={styles.loading}>
-              <Image
-                source={require("../../assets/car-keys-load.gif")}
-                style={styles.loadingImage}
-              />
-            </View>
+          <View style={styles.loading}>
+            <Image
+              source={require("../../assets/car-keys-load.gif")}
+              style={styles.loadingImage}
+            />
+          </View>
         )}
-          <Pressable style={{ alignItems: 'center', justifyContent: 'center' }} onPress={takePhoto}>
-            <LinearGradient 
-              colors={['#2A1943', '#38303B', '#120A19']} 
-              start={{ x: 0, y: 0 }} 
-              end={{ x: 1, y: 0 }} // Degradado horizontal
-              style={styles.cameraButton} // Aplica el degradado solo al botón
+        {/* Botón de captura */}
+        <View style={styles.buttonContainer}>
+          <Pressable onPress={takePhoto}>
+            <LinearGradient
+              colors={['#2A1943', '#38303B', '#120A19']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.cameraButton}
             >
               <Text style={styles.buttonText}>Captura al auto de tus sueños</Text>
               <Ionicons name="camera-outline" size={24} color="white" />
             </LinearGradient>
           </Pressable>
-        {/* Usar el componente Footer */}
+        </View>
+        {/* Footer */}
         <Footer activeScreen="Camera" navigation={navigation} />
       </SafeAreaView>
     </LinearGradient>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -131,21 +134,25 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRadius: 90,
     overflow: "hidden",
-    justifyContent: 'center', // Centra el contenido verticalmente
-    alignItems: 'center', // Centra el contenido horizontalmente
+    justifyContent: 'center', // Centra la cámara verticalmente
+    alignItems: 'center', // Centra la cámara horizontalmente
   },
   camera: {
-    width: '90%', // Asegúrate de que la cámara ocupe todo el ancho
-    height: '90%', // Asegúrate de que la cámara ocupe todo el alto
+    width: '90%', // Ajusta el ancho de la cámara
+    height: '90%', // Ajusta el alto de la cámara
     borderRadius: 30,
   },
+  buttonContainer: {
+    alignItems: 'center', // Centra el botón horizontalmente
+    marginBottom: 85, // Espacio entre el botón y el footer
+  },
   cameraButton: {
-    marginBottom: 80, // Espacio entre la cámara y el botón
     padding: 10,
     borderRadius: 10,
     alignItems: "center",
-    borderWidth: 1, // Grosor del borde
-    borderColor: "#6A0DAD", // Color morado (puedes cambiarlo)
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#6A0DAD",
   },
   buttonText: {
     color: "#fff",
@@ -162,7 +169,7 @@ const styles = StyleSheet.create({
     zIndex: 9999,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(20, 20, 20, 0.8)", // Color oscuro con opacidad
+    backgroundColor: "rgba(20, 20, 20, 0.8)",
   },
   loadingImage: {
     width: 70,
@@ -171,8 +178,8 @@ const styles = StyleSheet.create({
   perimssion: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center"
-  }
+    justifyContent: "center",
+  },
 });
 
 export default CameraScreen;
