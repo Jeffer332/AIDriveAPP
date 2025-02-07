@@ -8,6 +8,7 @@ import * as FileSystem from 'expo-file-system';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { uploadImageToAPI } from "../services/api";
 
 const CameraScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -35,21 +36,6 @@ const CameraScreen = ({ navigation }) => {
     );
   }
 
-  async function llamarApi(imageData) {
-    try {
-      const response = await fetch('http://192.168.3.2:8000/upload_image', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData }),
-      });
-
-      const data = await response.json();
-      console.log("Respuesta de la API:", data);
-    } catch (error) {
-      console.error("Error al llamar la API:", error);
-    }
-  }
-
   async function convertirImagenABase64(uri) {
     try {
       return await FileSystem.readAsStringAsync(uri, {
@@ -71,7 +57,7 @@ const CameraScreen = ({ navigation }) => {
 
         if (base64Image) {
           console.log("Enviando imagen a la API...");
-          await llamarApi(`data:image/png;base64,${base64Image}`);
+          await uploadImageToAPI(`data:image/png;base64,${base64Image}`);
           setPhoto(data.uri);
         }
       } catch (error) {
