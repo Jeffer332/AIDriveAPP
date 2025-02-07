@@ -6,7 +6,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import WelcomeScreen from './src/screens/WelcomeScreen';
 import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
-import NextScreen from './src/screens/NextScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import DViewScreen from './src/screens/DView';
 // Pantallas para el asistente virtual
@@ -27,7 +26,6 @@ const App = () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
         {/* Pantallas Home */}
-        <Stack.Screen name="NextScreen" component={NextScreen} />
         <Stack.Screen name="DView" component={DViewScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         {/* Pantalla del Splash Screen */}

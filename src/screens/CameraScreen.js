@@ -1,9 +1,12 @@
+// src/screens/CameraScreen.js
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
 import "../../global.css"
 
 const CameraScreen = ({ navigation }) => {
@@ -32,28 +35,27 @@ const CameraScreen = ({ navigation }) => {
 
   async function llamarApi(imageData) {
     try {
-        const response = await fetch('http://192.168.3.2:8000/upload_image', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ image: imageData }),
-        });
+      const response = await fetch('http://10.116.15.177:8000/upload_image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData }),
+      });
 
-        const data = await response.json();
-        console.log("Respuesta de la API:", data);
-
+      const data = await response.json();
+      console.log("Respuesta de la API:", data);
     } catch (error) {
-        console.error("Error al llamar la API:", error);
+      console.error("Error al llamar la API:", error);
     }
   }
 
   async function convertirImagenABase64(uri) {
     try {
-        return await FileSystem.readAsStringAsync(uri, {
-            encoding: FileSystem.EncodingType.Base64,
-        });
+      return await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
     } catch (error) {
-        console.error("Error al convertir imagen a Base64:", error);
-        return null;
+      console.error("Error al convertir imagen a Base64:", error);
+      return null;
     }
   }
 
@@ -68,19 +70,19 @@ const CameraScreen = ({ navigation }) => {
           console.log("Enviando imagen a la API...");
           await llamarApi(`data:image/png;base64,${base64Image}`);
         }
-        
       } catch (error) {
-          console.log("Error al tomar la foto:", error);
+        console.log("Error al tomar la foto:", error);
       }
     }
   };
 
   return (
     <LinearGradient 
-          colors={['#2A1943', '#38303B', '#120A19']} 
-          style={{ flex: 1 }}
+      colors={['#2A1943', '#38303B', '#120A19']} 
+      style={{ flex: 1 }}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}> {/* Excluye la parte superior */}
+        <Header />
         <View style={styles.cameraContainer}>
           <CameraView
             style={styles.camera}
@@ -90,6 +92,8 @@ const CameraScreen = ({ navigation }) => {
         <Pressable style={styles.cameraButton} onPress={takePhoto}>
           <Text style={styles.buttonText}>Tomar Foto</Text>
         </Pressable>
+        {/* Usar el componente Footer */}
+        <Footer activeScreen="Camera" navigation={navigation} />
       </SafeAreaView>
     </LinearGradient>
   );
@@ -98,32 +102,32 @@ const CameraScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    justifyContent: 'space-between', // Distribuye el espacio entre el header, la cámara y el footer
   },
   cameraContainer: {
     flex: 1,
-    borderRadius: 20,
+    borderRadius: 80,
     overflow: "hidden",
+    justifyContent: 'center', // Centra el contenido verticalmente
+    alignItems: 'center', // Centra el contenido horizontalmente
   },
   camera: {
-    flex: 1,
+    width: '95%', // Asegúrate de que la cámara ocupe todo el ancho
+    height: '95%', // Asegúrate de que la cámara ocupe todo el alto
   },
   cameraButton: {
-    marginTop: 20,
-    padding: 15,
+    marginBottom: 60, // Espacio entre la cámara y el botón
+    padding: 10,
     borderRadius: 10,
     backgroundColor: "#8A76B5",
     alignItems: "center",
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: "800",
-    marginBottom: 10,
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+    padding: 5,
   },
 });
+
 export default CameraScreen;

@@ -72,7 +72,7 @@ const RegisterScreen = ({ navigation }) => {
         style={RegisterScreenStyles.imageBackground}
       >
         <View style={RegisterScreenStyles.container}>
-          <Image source={require('../../assets/logo2.png')} style={RegisterScreenStyles.logo} />
+          <Image source={require('../../assets/logo.png')} style={RegisterScreenStyles.logo} />
 
           <Text style={RegisterScreenStyles.title}>Registro</Text>
 

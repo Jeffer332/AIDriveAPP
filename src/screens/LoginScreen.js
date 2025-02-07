@@ -52,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
         style={{ height: '50%', width: '100%' }} // Cambia el tamaño de la imagen de fondo a 50%
       >
         <View style={LoginScreenStyles.container}>
-          <Image source={require('../../assets/logo2.png')} style={LoginScreenStyles.logo} />
+          <Image source={require('../../assets/logo.png')} style={LoginScreenStyles.logo} />
           
           <View style={LoginScreenStyles.buttonContainer}>
             <TouchableOpacity style={LoginScreenStyles.button} onPress={() => navigation.navigate('Login')}>

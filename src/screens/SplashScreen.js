@@ -2,6 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const { width, height } = Dimensions.get("window");
 
@@ -53,6 +55,7 @@ const SplashScreen = ({ navigation }) => {
         </TouchableOpacity>
 
       </View>
+      <Footer activeScreen="SplashScreen" navigation={navigation} />
     </LinearGradient>
   );
 };

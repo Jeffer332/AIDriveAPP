@@ -1,11 +1,11 @@
 // src/screens/HomeScreen.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking, FlatList } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import { auth } from '../services/firebase';
 import { useNavigation } from '@react-navigation/native';
+import Footer from '../components/Footer'; // Importa el Footer
 
 const HomeScreen = () => {
   const [userData, setUserData] = useState(null);
@@ -42,8 +42,8 @@ const HomeScreen = () => {
       }
     });
 
-     // Obtener datos de autos para el segundo carrusel
-     const unsubscribeSecond = onValue(autosRef, (snapshot) => {
+    // Obtener datos de autos para el segundo carrusel
+    const unsubscribeSecond = onValue(autosRef, (snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
         const autosSecondArray = Object.keys(data) // Obtiene las claves únicas de los autos
@@ -128,7 +128,7 @@ const HomeScreen = () => {
           contentContainerStyle={styles.carousel}
         />
 
-<FlatList
+        <FlatList
           data={autosSecond}
           renderItem={({ item }) => (
             <View style={styles.card}>
@@ -149,21 +149,8 @@ const HomeScreen = () => {
         />
       </ScrollView>
 
-      {/* Footer con Íconos */}
-      <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-          <Ionicons name="home" size={30} color="#494C73" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('SplashScreen')}>
-          <Ionicons name="chatbubble-ellipses" size={30} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Camera')}>
-          <Ionicons name="camera" size={30} color="#fff" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('DView')}>
-          <Ionicons name="logo-apple-ar" size={30} color="#fff" />
-        </TouchableOpacity>
-      </View>
+      {/* Usar el componente Footer */}
+      <Footer activeScreen="Home" navigation={navigation} />
     </View>
   );
 };
@@ -233,7 +220,6 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     alignItems: 'center',
     marginHorizontal: 5, // Espaciado horizontal entre tarjetas
-    alignItems: 'center',
     width: 400, // Ancho fijo para las tarjetas
     height: 335,
   },
@@ -243,7 +229,6 @@ const styles = StyleSheet.create({
     elevation: 5,
     padding: 5,
     marginVertical: 10,
-    alignItems: 'center',
     alignItems: 'center',
     width: 400, // Ancho fijo para las tarjetas
     height: 270,
@@ -283,18 +268,6 @@ const styles = StyleSheet.create({
   },
   carousel: {
     paddingVertical: 10,
-  },
-  footer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 15,
-    backgroundColor: '#191A2E',
-    elevation: 5,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
   },
 });
 
