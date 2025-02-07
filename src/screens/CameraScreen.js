@@ -4,6 +4,7 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
+import "../../global.css"
 
 const CameraScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -15,12 +16,17 @@ const CameraScreen = ({ navigation }) => {
 
   if (!permission.granted) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.message}>Se necesitan permisos para usar la cámara</Text>
-        <Pressable style={styles.cameraButton} onPress={requestPermission}>
-          <Text>Otorgar permisos</Text>
-        </Pressable>
-      </View>
+      <LinearGradient
+        colors={['#2A1943', '#38303B', '#120A19']}
+        className = "flex-1"
+      >
+        <View className = "flex flex-1 items-center justify-center">
+          <Text className = "color-white">Se necesitan permisos para usar la cámara</Text>
+          <Pressable style={styles.cameraButton} onPress={requestPermission}>
+            <Text>Otorgar permisos</Text>
+          </Pressable>
+        </View>
+      </LinearGradient>
     );
   }
 
