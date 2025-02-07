@@ -2,16 +2,20 @@
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Image } from "expo-image"
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from 'expo-linear-gradient';
 import * as FileSystem from 'expo-file-system';
 import Footer from '../components/Footer';
 import Header from '../components/Header';
-import "../../global.css"
+import Ionicons from '@expo/vector-icons/Ionicons';
+
 
 const CameraScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
   const [permission, requestPermission] = useCameraPermissions();
+  const [loading, setLoading] = useState(false);
+  const [photo, setPhoto] = useState(null);
 
   if (!permission) {
     return <View />;
@@ -21,10 +25,10 @@ const CameraScreen = ({ navigation }) => {
     return (
       <LinearGradient
         colors={['#2A1943', '#38303B', '#120A19']}
-        className = "flex-1"
+        style={{ flex: 1 }}
       >
-        <View className = "flex flex-1 items-center justify-center">
-          <Text className = "color-white">Se necesitan permisos para usar la cámara</Text>
+        <View style={styles.perimssion}>
+          <Text style={{ color: 'white' }}>Se necesitan permisos para usar la cámara</Text>
           <Pressable style={styles.cameraButton} onPress={requestPermission}>
             <Text>Otorgar permisos</Text>
           </Pressable>
@@ -35,7 +39,7 @@ const CameraScreen = ({ navigation }) => {
 
   async function llamarApi(imageData) {
     try {
-      const response = await fetch('http://10.116.15.177:8000/upload_image', {
+      const response = await fetch('http://192.168.3.2:8000/upload_image', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ image: imageData }),
@@ -61,6 +65,7 @@ const CameraScreen = ({ navigation }) => {
 
   const takePhoto = async () => {
     if (camera) {
+      setLoading(true);
       try {
         const options = { quality: 0.5, exif: false };
         const data = await camera.takePictureAsync(options);
@@ -69,11 +74,13 @@ const CameraScreen = ({ navigation }) => {
         if (base64Image) {
           console.log("Enviando imagen a la API...");
           await llamarApi(`data:image/png;base64,${base64Image}`);
+          setPhoto(data.uri);
         }
       } catch (error) {
         console.log("Error al tomar la foto:", error);
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -81,17 +88,33 @@ const CameraScreen = ({ navigation }) => {
       colors={['#2A1943', '#38303B', '#120A19']} 
       style={{ flex: 1 }}
     >
-      <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}> {/* Excluye la parte superior */}
-        <Header />
+    <Header/>
+      <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}>
         <View style={styles.cameraContainer}>
           <CameraView
             style={styles.camera}
             ref={(ref) => setCamera(ref)}
           />
         </View>
-        <Pressable style={styles.cameraButton} onPress={takePhoto}>
-          <Text style={styles.buttonText}>Tomar Foto</Text>
-        </Pressable>
+        {loading && (
+            <View style={styles.loading}>
+              <Image
+                source={require("../../assets/car-keys-load.gif")}
+                style={styles.loadingImage}
+              />
+            </View>
+        )}
+          <Pressable style={{ alignItems: 'center', justifyContent: 'center' }} onPress={takePhoto}>
+            <LinearGradient 
+              colors={['#2A1943', '#38303B', '#120A19']} 
+              start={{ x: 0, y: 0 }} 
+              end={{ x: 1, y: 0 }} // Degradado horizontal
+              style={styles.cameraButton} // Aplica el degradado solo al botón
+            >
+              <Text style={styles.buttonText}>Captura al auto de tus sueños</Text>
+              <Ionicons name="camera-outline" size={24} color="white" />
+            </LinearGradient>
+          </Pressable>
         {/* Usar el componente Footer */}
         <Footer activeScreen="Camera" navigation={navigation} />
       </SafeAreaView>
@@ -106,21 +129,23 @@ const styles = StyleSheet.create({
   },
   cameraContainer: {
     flex: 1,
-    borderRadius: 80,
+    borderRadius: 90,
     overflow: "hidden",
     justifyContent: 'center', // Centra el contenido verticalmente
     alignItems: 'center', // Centra el contenido horizontalmente
   },
   camera: {
-    width: '95%', // Asegúrate de que la cámara ocupe todo el ancho
-    height: '95%', // Asegúrate de que la cámara ocupe todo el alto
+    width: '90%', // Asegúrate de que la cámara ocupe todo el ancho
+    height: '90%', // Asegúrate de que la cámara ocupe todo el alto
+    borderRadius: 30,
   },
   cameraButton: {
-    marginBottom: 60, // Espacio entre la cámara y el botón
+    marginBottom: 80, // Espacio entre la cámara y el botón
     padding: 10,
     borderRadius: 10,
-    backgroundColor: "#8A76B5",
     alignItems: "center",
+    borderWidth: 1, // Grosor del borde
+    borderColor: "#6A0DAD", // Color morado (puedes cambiarlo)
   },
   buttonText: {
     color: "#fff",
@@ -128,6 +153,26 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     padding: 5,
   },
+  loading: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    zIndex: 9999,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(20, 20, 20, 0.8)", // Color oscuro con opacidad
+  },
+  loadingImage: {
+    width: 70,
+    height: 70,
+  },
+  perimssion: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  }
 });
 
 export default CameraScreen;
