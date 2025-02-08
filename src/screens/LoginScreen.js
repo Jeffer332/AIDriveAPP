@@ -1,6 +1,15 @@
 // src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import {View, TextInput, Text, Image, TouchableOpacity, ImageBackground, KeyboardAvoidingView, Platform, ScrollView,
+import {
+  View,
+  TextInput,
+  Text,
+  Image,
+  TouchableOpacity,
+  ImageBackground,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
   TouchableWithoutFeedback,
   Keyboard,
   ActivityIndicator
