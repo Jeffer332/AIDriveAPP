@@ -1,4 +1,4 @@
-// src/styles/RegisterScreenStyles.js
+// src/screens/RegisterScreenStyles.js
 import { StyleSheet } from 'react-native';
 
 const RegisterScreenStyles = StyleSheet.create({
@@ -6,87 +6,146 @@ const RegisterScreenStyles = StyleSheet.create({
     flex: 1,
   },
   imageBackground: {
-    height: '50%', // Cambia esto a 50% para que ocupe solo la mitad superior
+    flex: 1,
     width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(48, 46, 46, 0.3)',
+  },
   container: {
-    width: '90%',
-    backgroundColor: 'white', // Fondo blanco sin transparencia
-    borderRadius: 20,
+    width: '85%',
+    backgroundColor: 'rgba(22, 21, 21, 0.6)',
+    borderRadius: 15,
     padding: 20,
     alignItems: 'center',
-    elevation: 5,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    //position: 'absolute', // Cambiado a absolute para centrar el cuadro
-    marginTop: '25%', // Ajusta la posición vertical del cuadro
-    top: '40%', // Ajusta la posición vertical del cuadro
+    minHeight: 450,
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 80,
+    height: 90,
+    marginBottom: 30,
+  },
+  welcomeText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
     marginBottom: 20,
   },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#BCC1CAFF',
+    paddingHorizontal: 15,
+    height: 52,
+    marginBottom: 15,
+  },
+  iconLeft: {
+    position: 'absolute',
+    left: 15,
   },
   input: {
-    height: 40,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 15,
-    paddingHorizontal: 10,
-    width: '100%',
-  },
-  dropdown: {
-    height: 40, // Asegúrate de que el dropdown tenga la misma altura que los otros campos
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 20, // Espacio adicional
-    paddingHorizontal: 163,
-    width: '100%',
-    backgroundColor: 'white', // Asegúrate de que el fondo sea blanco
-    textAlign: 'left', // Alineación a la izquierda
+    flex: 1,
+    color: 'white',
+    fontSize: 12,
+    paddingLeft: 30,
   },
   button: {
     backgroundColor: '#0583F2',
-    padding: 20,
-    borderRadius: 5,
-    width: '100%',
+    padding: 15,
+    borderRadius: 10,
     alignItems: 'center',
+    width: '100%',
   },
   buttonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   link: {
+    color: '#0583F2',
     marginTop: 10,
-    color: '#007BFF',
-    textDecorationLine: 'underline',
+    fontWeight: 'bold',
+  },
+  dropdownContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: '100%',
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: '#BCC1CAFF',
+    paddingHorizontal: 15,
+    height: 52,
+    marginBottom: 15,
+    backgroundColor: 'transparent',
+  },
+  dropdown: {
+    flex: 1,
+    fontSize: 14,
+    color: 'white',
+  },
+  // Caja de opciones
+  dropdownItemText: {
+    fontSize: 12,
+    color: 'black',
+    paddingVertical: 1,
+    textAlign: 'left',
+  },
+  dropdownList: {
+    width: '100%', // Para que ocupe el mismo ancho que los inputs
+    backgroundColor: 'white',
+    borderRadius: 6,
+    maxHeight: 200, // Limitar el alto de la lista
+  },
+  // texto dentro de provincia
+  dropdownPlaceholder: {
+    fontSize: 12,
+    color: '#A7ADB7',
+    paddingLeft: 30,
+  },
+  dropdownText: {
+    fontSize: 14,
+    color: 'white', 
+    paddingLeft: 30, 
+  },
+  loginText: {
+    padding: 10,
+    color: 'white',
+    fontSize: 14,
+  },  
+  rowContainer: {
+    flexDirection: 'row', //Alinea los inputs en fila
+    width: '100%', 
+    justifyContent: 'space-between', //Separa los inputs de manera uniforme
+  },
+  iconRight: {
+    position: 'absolute',
+    right: 15, // 🔹 Ajusta la posición a la derecha del campo de contraseña
   },
   passwordStrengthBarContainer: {
-    height: 10,
-    width: '100%',
+    height: 4,
+    width: '65%',
     backgroundColor: '#e0e0e0',
     borderRadius: 5,
-    marginVertical: 10,
+    marginVertical: 1,
   },
   passwordStrengthBar: {
     height: '100%',
     borderRadius: 5,
   },
   passwordStrength: {
-    fontSize: 14,
+    fontSize: 11,
     marginTop: 5,
     padding: 10,
   },
+  
+
 });
 
 export default RegisterScreenStyles;
