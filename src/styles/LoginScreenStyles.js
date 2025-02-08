@@ -68,7 +68,7 @@ const LoginScreenStyles = StyleSheet.create({
   disabledButton: {
     backgroundColor: '#A7ADB7', // Color gris indicando inactividad
   },
-  
+
   forgotPasswordContainer: {
     width: '100%',
     alignItems: 'flex-end',
@@ -112,7 +112,7 @@ const LoginScreenStyles = StyleSheet.create({
     fontSize: 11,
     marginBottom: 9,
     textAlign: 'center',
-  }  
+  }
 });
 
 export default LoginScreenStyles;
