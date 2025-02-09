@@ -20,9 +20,13 @@ export default function RegisterScreen({ navigation }) {
 
   // Validar correo
   const validateEmail = (email) => {
+    if (typeof email !== 'string') {
+        return false; // Asegurarse de que el input sea una cadena
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
+    return emailRegex.test(email.trim()); // Eliminar espacios en blanco al inicio y final
+};
 
 // Validar fortaleza de la contraseña
 const validatePasswordStrength = (password) => {
