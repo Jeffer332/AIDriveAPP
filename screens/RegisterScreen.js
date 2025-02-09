@@ -28,16 +28,23 @@ export default function RegisterScreen({ navigation }) {
     return emailRegex.test(email.trim()); // Eliminar espacios en blanco al inicio y final
 };
 
+// Validar fortaleza de la contraseña
+const validatePasswordStrength = (password) => {
+  if (!password) return 'Débil';
 
-  // Validar fortaleza de la contraseña
-  const validatePasswordStrength = (password) => {
-    if (password.length < 6) return 'Débil';
-    if (/[A-Z]/.test(password) && /[a-z]/.test(password) && /[\W]/.test(password)) {
-      return 'Fuerte';
-    }
-    return 'Media';
+  let strengthPoints = 0;
+
+  if (password.length >= 8) strengthPoints++; // Longitud mínima recomendada
+  if (/[A-Z]/.test(password)) strengthPoints++; // Contiene mayúscula
+  if (/[a-z]/.test(password)) strengthPoints++; // Contiene minúscula
+  if (/\d/.test(password)) strengthPoints++; // Contiene número
+  if (/[\W_]/.test(password)) strengthPoints++; // Contiene carácter especial
+
+  if (strengthPoints >= 5) return 'Fuerte';
+  if (strengthPoints >= 3) return 'Media';
+  
+  return 'Débil';
   };
-
   // Manejar cambios en la contraseña
   const handlePasswordChange = (value) => {
     setPassword(value);
