@@ -120,17 +120,11 @@ async def recomendar_auto(request: AutoRequest):
 
     return AutoResponse(sugerencias=sugerencias, autos=autos)
 
-# Configuración de ejecución del servidor con IP y puerto específicos
-if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
-
-
 
 
 # cargar la imagen para que funcione el reconocimiento del vehículo
 class ImageData(BaseModel):
     image: str  # Imagen en formato base64
-
 
 @app.post("/upload_image")
 def upload_image(data: ImageData):
