@@ -1,7 +1,7 @@
-const API_BASE_URL = "http://192.168.3.2:8000";
+// src/services/api.js
 export const getAutoRecommendation = async (texto) => {
-  //const url = 'http://192.168.100.8:8000/recomendar';
-  const response = await fetch(`${API_BASE_URL}/recomendar`, {
+  const url = 'http://192.168.0.3:8000/recomendar';
+  const response = await fetch(url, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -10,10 +10,13 @@ export const getAutoRecommendation = async (texto) => {
   });
 
   if (!response.ok) {
-    throw new Error('Error al obtener respuesta del chatbot');
+    throw new Error('Error al obtener respuesta del Asistente Virtual');
   }
 
-  return response.json();
+  const data = await response.json();
+  //console.log("Respuesta de la API:", data); // 
+
+  return data;
 };
 
 // Función movida desde CameraScreen.js

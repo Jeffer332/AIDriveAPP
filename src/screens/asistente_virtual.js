@@ -1,4 +1,4 @@
-// Importación de módulos y componentes necesarios
+//src/screens/asistente_virtual.js
 import React, { useState, useRef, useEffect } from "react";
 import {
   View,
@@ -20,6 +20,10 @@ import * as Clipboard from "expo-clipboard";
 import * as Speech from "expo-speech";
 import Markdown from "react-native-markdown-display";
 import { getAutoRecommendation } from "../services/api";
+import { saveMessageToFirestore, loadMessagesFromFirestore } from "../services/chat_service"; //función para guardar en Firestore
+import { auth } from "../services/firebase";
+import { onAuthStateChanged } from "firebase/auth"; // 🔹 Importar la función correcta
+
 
 const BOT_IMAGE = require("../../assets/perfil_av.png");
 
@@ -30,6 +34,18 @@ const AsistenteVirtual = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false); // Estado para indicar si el bot está escribiendo
   const flatListRef = useRef(null); // Referencia a la lista de mensajes para el autoscroll
 
+  // Escuchar mensajes desde Firestore cuando el usuario está autenticado
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        // 🔹 Escuchar cambios en tiempo real de Firestore
+        return loadMessagesFromFirestore(currentUser.uid, setMessages);
+      }
+    });
+
+    return () => unsubscribe(); // Cleanup al salir de la pantalla
+  }, []);
+
   // Efecto para hacer scroll automático al final cuando hay nuevos mensajes
   useEffect(() => {
     setTimeout(() => {
@@ -39,31 +55,49 @@ const AsistenteVirtual = ({ navigation }) => {
 
   // Función para enviar un mensaje
   const sendMessage = async () => {
-    if (!inputText.trim() || isTyping) return; // Deshabilitado al escribir o vacio
+    if (!inputText.trim() || isTyping) return; // Evitar envíos vacíos
 
-    // Agrega el mensaje del usuario a la lista de mensajes
-    const userMessage = { sender: "user", text: inputText };
+    const user = auth.currentUser; // 🔹 Obtener usuario autenticado
+    if (!user) {
+      console.error("Usuario no autenticado");
+      return;
+    }
+
+    const userMessage = {
+      sender: "user",
+      text: inputText,
+      timestamp: new Date().toISOString()
+    };
+
+    // 🔹 Agregar el mensaje del usuario a la lista de mensajes en pantalla
     setMessages((prev) => [...prev, userMessage]);
+
+    // 🔹 Guardar mensaje del usuario en Firestore
+    await saveMessageToFirestore(user.uid, userMessage);
+
     setInputText("");
     setIsTyping(true);
 
     try {
-      // Llama a la API para obtener la respuesta del asistente virtual
+      // Llamar a la API para obtener la respuesta del asistente virtual
       const response = await getAutoRecommendation(inputText);
-      setTimeout(() => {
+      const botMessage = {
+        sender: "bot",
+        text: response.sugerencias,
+        autos: response.autos || [],
+        timestamp: new Date().toISOString(),
+      };
+
+      setTimeout(async () => {
         setIsTyping(false);
-        // Respuesta del bot a la lista de mensajes
-        setMessages((prev) => [
-          ...prev,
-          { sender: "bot", text: response.sugerencias },
-        ]);
+        setMessages((prev) => [...prev, botMessage]);
+
+        // 🔹 Guardar respuesta del bot en Firestore
+        await saveMessageToFirestore(user.uid, botMessage);
       }, 1000);
     } catch (error) {
       setIsTyping(false);
-      setMessages((prev) => [
-        ...prev,
-        { sender: "bot", text: "Error al comunicarse con el servidor." },
-      ]);
+      setMessages((prev) => [...prev, { sender: "bot", text: "Error al comunicarse con el servidor." }]);
     }
   };
 
@@ -107,16 +141,13 @@ const AsistenteVirtual = ({ navigation }) => {
       {item.sender === "bot" && (
         <Image source={BOT_IMAGE} className="w-7 h-7 rounded-full mr-2" />
       )}
-
       {/* Contenedor del mensaje */}
       <View className={`p-3 rounded-lg ${item.sender === "user" ? "max-w-[75%]" : "w-[75%]"} ${item.sender === "user" ? "bg-[#3b3033]" : "bg-[#38303B]"}`}>
-
         {/* Nombre del bot si el mensaje es del asistente virtual */}
         {item.sender === "bot" && !item.isTyping && (
           <Text className="text-xs text-gray-400 mb-1">AIDrive</Text>
         )}
 
-        {/* Mensaje de "escribiendo..." cuando el bot responde */}
         {item.isTyping ? (
           <View className="flex-row items-center">
             <ActivityIndicator size="small" color="#ffffff" />
@@ -140,6 +171,21 @@ const AsistenteVirtual = ({ navigation }) => {
             </TouchableOpacity>
           </View>
         )}
+
+        {/*Mostrar múltiples imágenes cuando haya varias recomendaciones */}
+        {item.autos && item.autos.length > 0 && item.autos.map((auto, i) => (
+          <View key={i} className="mt-2">
+            <Text className="text-xs text-white font-bold">{auto.nombre}</Text>
+            <Text className="text-xs text-gray-300">{auto.descripcion}</Text>
+            {auto.imagen_url && auto.imagen_url.startsWith("http") && (
+              <Image
+                source={{ uri: auto.imagen_url }}
+                style={{ width: 250, height: 150, borderRadius: 10, marginTop: 5 }}
+                resizeMode="cover"
+              />
+            )}
+          </View>
+        ))}
       </View>
     </View>
   );
@@ -147,7 +193,7 @@ const AsistenteVirtual = ({ navigation }) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      keyboardVerticalOffset={Platform.OS === "ios" ? 2 : 0}
+      //keyboardVerticalOffset={Platform.OS === "ios" ? 2 : 0}
       className="flex-1 bg-[#1a1a2e]"
     >
       <SafeAreaView className="flex-1">
@@ -193,20 +239,21 @@ const AsistenteVirtual = ({ navigation }) => {
             onChangeText={setInputText}
           />
           <TouchableOpacity
-        onPress={() => {
-          sendMessage();
-          Keyboard.dismiss(); // Cierra el teclado al enviar el mensaje
-        }}
-        disabled={!inputText.trim() || isTyping}
-        className={`ml-3 p-3 rounded-full ${!inputText.trim() || isTyping ? "bg-gray-500 opacity-50" : "bg-[#007aff]"}`}
-      >
-        <Ionicons name="send" size={18} color="#ffffff" />
-      </TouchableOpacity>
+            onPress={() => {
+              sendMessage();
+              Keyboard.dismiss(); // Cierra el teclado al enviar el mensaje
+            }}
+            disabled={!inputText.trim() || isTyping}
+            className={`ml-3 p-3 rounded-full ${!inputText.trim() || isTyping ? "bg-gray-500 opacity-50" : "bg-[#007aff]"}`}
+          >
+            <Ionicons name="send" size={18} color="#ffffff" />
+          </TouchableOpacity>
         </View>
 
       </SafeAreaView>
     </KeyboardAvoidingView>
   );
 };
+
 
 export default AsistenteVirtual;

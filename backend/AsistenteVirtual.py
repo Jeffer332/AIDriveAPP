@@ -3,11 +3,11 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import google.generativeai as genai
 from fastapi.middleware.cors import CORSMiddleware
-import pandas as pd
 from dotenv import load_dotenv
 import os
 import json
 import uvicorn
+from firebase_config import get_autos_data  # Importamos la función para obtener autos desde Firebase
 
 # Cargar variables de entorno
 load_dotenv()
@@ -23,22 +23,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Obtener la ruta absoluta del archivo actual (AsistenteVirtual.py)
-base_dir = os.path.dirname(os.path.abspath(__file__))  # Obtiene el directorio donde está el archivo AsistenteVirtual.py
-
-# Crear la ruta completa hacia el archivo autos_ficha_tecnica.csv dentro de la carpeta 'datos_autos'
-csv_file = os.path.join(base_dir, 'datos_autos', 'autos_ficha_tecnica.csv')  # Combina el directorio base con la carpeta y el archivo CSV
-
-
-# Cargar datos del CSV en memoria
-#csv_file = "../autos_ficha_tecnica.csv"
-try:
-    df = pd.read_csv(csv_file)
-except FileNotFoundError:
-    raise Exception(f"No se encontró el archivo CSV en la ruta: {csv_file}")
-except pd.errors.EmptyDataError:
-    raise Exception(f"El archivo CSV está vacío: {csv_file}")
-
 # Cargar API Key de Gemini
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 if not GOOGLE_API_KEY:
@@ -46,17 +30,22 @@ if not GOOGLE_API_KEY:
 
 genai.configure(api_key=GOOGLE_API_KEY)
 
-# Modelo de datos para solicitud y respuesta
+# 🔹 Definir AutoRequest antes de usarlo
 class AutoRequest(BaseModel):
     texto: str
 
+class Auto(BaseModel):
+    nombre: str
+    descripcion: str
+    imagen_url: str | None = None
+
 class AutoResponse(BaseModel):
     sugerencias: str
+    autos: list[Auto]
 
 @app.get("/")
 def read_root():
     return {"mensaje": "API de Asistente Virtual para Vehículos funcionando correctamente"}
-
 
 @app.post("/recomendar", response_model=AutoResponse)
 async def recomendar_auto(request: AutoRequest):
@@ -65,15 +54,37 @@ async def recomendar_auto(request: AutoRequest):
     if not user_input:
         raise HTTPException(status_code=400, detail="El texto no puede estar vacío.")
 
-    # Convertir todo el CSV a formato JSON
-    autos_data_json = df.to_dict(orient="records")  
+    # Obtener los datos desde Firebase
+    autos_data_json = get_autos_data()
+    
+    if not autos_data_json:
+        return AutoResponse(sugerencias="No hay autos en la base de datos.", autos=[])
+
     autos_data_str = json.dumps(autos_data_json, ensure_ascii=False)
 
     system_prompt = """
     Eres un asesor experto y vendedor de autos. Un usuario te dijo: '{user_input}'.
-    Usa los datos disponibles para recomendar el mejor vehículo filtrando por preferencias y características que te indica el usuario.
+    Usa los datos disponibles para recomendar los mejores vehículos filtrando por preferencias y características que te indica el usuario.
     Si no encuentras alternativas exactas, sugiere otras muy parecidas.
-    Genera una respuesta clara y corta con recomendaciones útiles.
+
+    Asegúrate de devolver la respuesta en el siguiente formato JSON:
+
+    {{
+      "sugerencias": "Texto con la recomendación de los autos.",
+      "autos": [
+        {{
+          "nombre": "Nombre del auto recomendado",
+          "descripcion": "Breve descripción del auto",
+          "imagen_url": "URL de la imagen del auto recomendado"
+        }},
+        {{
+          "nombre": "Nombre del segundo auto",
+          "descripcion": "Descripción del segundo auto",
+          "imagen_url": "URL de la imagen del segundo auto"
+        }}
+      ]
+    }}
+
     Autos disponibles:
     {available_cars}
     """
@@ -81,24 +92,40 @@ async def recomendar_auto(request: AutoRequest):
     final_prompt = system_prompt.format(user_input=user_input, available_cars=autos_data_str)
 
     try:
-        # Configurar el modelo con los parámetros correctos
         model = genai.GenerativeModel("gemini-1.5-flash")
-        
         response = model.generate_content(
             final_prompt,
-            generation_config={  #Parámetros de control de generación
-                "temperature": 0.8,  # Controla la creatividad
-                "max_output_tokens": 1000,  # Longitud de la respuesta
-                "top_p": 0.9,  # Control de aleatoriedad
-                "top_k": 40  # Filtro de palabras más probables
+            generation_config={
+                "temperature": 0.8,
+                "max_output_tokens": 1000,
+                "top_p": 0.9,
+                "top_k": 40
             }
         )
-        
-        resultado = response.text.strip()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error al comunicarse con Gemini: {str(e)}")
 
-    return AutoResponse(sugerencias=resultado)
+        if not response.text.strip():
+            raise ValueError("La respuesta de Gemini está vacía.")
+
+        try:
+            json_response = json.loads(response.text.strip().replace("```json", "").replace("```", ""))
+        except json.JSONDecodeError:
+            raise ValueError(f"Respuesta no válida de Gemini: {response.text.strip()}")
+
+        sugerencias = json_response.get("sugerencias", "No se pudo generar una recomendación.")
+        autos = json_response.get("autos", [])
+
+    except Exception as e:
+        sugerencias = "Parece que hubo un error al procesar tu solicitud. Intenta nuevamente."
+        autos = []
+
+    return AutoResponse(sugerencias=sugerencias, autos=autos)
+
+# Configuración de ejecución del servidor con IP y puerto específicos
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+
+
 
 # cargar la imagen para que funcione el reconocimiento del vehículo
 class ImageData(BaseModel):
@@ -135,5 +162,5 @@ def upload_image(data: ImageData):
 
 # Configuración de ejecución del servidor con IP y puerto específicos
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+   uvicorn.run(app, host="0.0.0.0", port=8000)
 
