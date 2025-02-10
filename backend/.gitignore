@@ -1,4 +1,4 @@
 # Ignorar el archivo de variables de entorno
 .env
 
-.firebase_config.py
+.firebase_key.json
