@@ -36,5 +36,10 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# Ignorar archivo de configuración de Firebase
-firebase.jsbackend/firebase_key.json
+# Ignorar archivos y carpetas generados automáticamente
+__pycache__/
+
+# Ignorar claves de Firebase (¡Importante por seguridad!)
+firebase_key.json
+
+
