@@ -8,7 +8,6 @@ import Animated, {
   Easing
 } from 'react-native-reanimated'; // Importa Animated y sus utilidades
 import WelcomeScreenStyles from '../styles/WelcomeScreenStyles';
-import globalStyles from '../styles/globalStyles';
 
 const WelcomeScreen = ({ navigation }) => {
   const scale = useSharedValue(0); // Valor compartido para la animación de escala

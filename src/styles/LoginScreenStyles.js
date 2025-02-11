@@ -42,7 +42,7 @@ const LoginScreenStyles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     backgroundColor: 'transparent', // Fondo transparente
-    borderRadius: 6,
+    borderRadius: 10,
     borderWidth: 1,
     borderColor: '#BCC1CAFF',
     paddingHorizontal: 15,
@@ -61,7 +61,7 @@ const LoginScreenStyles = StyleSheet.create({
     flex: 1,
     color: '#FFFFFF', // Texto ingresado en color blanco
     fontSize: 12,
-    lineHeight: 28,
+    lineHeight: 15,
     fontWeight: '400',
     paddingLeft: 30, // Espacio para el ícono izquierdo
   },
