@@ -1,4 +1,0 @@
-# Ignorar el archivo de variables de entorno
-.env
-
-.firebase_key.json
