@@ -130,7 +130,7 @@ const AsistenteVirtual = ({ navigation }) => {
         onDone: () => setSpeakingMessage(null),
         onStopped: () => setSpeakingMessage(null),
       });
-      setSpeakingMessage(index);
+      setSpeakingMessage(index === speakingMessage ? null : index);
     }
   };
 
@@ -164,7 +164,7 @@ const AsistenteVirtual = ({ navigation }) => {
         {item.sender === "bot" && !item.isTyping && (
           <View className="flex-row justify-end mt-2">
             <TouchableOpacity onPress={() => toggleSpeakMessage(item.text, index)} className="mr-3">
-              <Ionicons name={speakingMessage === index ? "volume-mute" : "volume-high"} size={18} color="#ffffff" />
+              <Ionicons name={speakingMessage === index ? "volume-high" : "volume-mute"} size={18} color="#ffffff" />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => copyToClipboard(item.text)}>
               <Ionicons name="copy" size={18} color="#ffffff" />
