@@ -38,14 +38,11 @@ class Auto(BaseModel):
     nombre: str
     descripcion: str
     imagen_url: str | None = None
+    puntos_a_considerar: str  # Nuevo campo agregado
 
 class AutoResponse(BaseModel):
     sugerencias: str
     autos: list[Auto]
-
-@app.get("/")
-def read_root():
-    return {"mensaje": "API de Asistente Virtual para Vehículos funcionando correctamente"}
 
 @app.post("/recomendar", response_model=AutoResponse)
 async def recomendar_auto(request: AutoRequest):
@@ -63,11 +60,10 @@ async def recomendar_auto(request: AutoRequest):
     autos_data_str = json.dumps(autos_data_json, ensure_ascii=False)
 
     system_prompt = """
-    Eres un asesor experto y vendedor de autos. Un usuario te dijo: '{user_input}'.
-    Usa los datos disponibles para recomendar los mejores vehículos filtrando por preferencias y características que te indica el usuario.
-    Si no encuentras alternativas exactas, sugiere otras muy parecidas.
-
-    Asegúrate de devolver la respuesta en el siguiente formato JSON:
+    Eres un asesor experto en autos. Un usuario te preguntó: '{user_input}'.
+    Usa los datos disponibles para recomendar los mejores vehículos según sus preferencias.
+    Si no hay coincidencias exactas, sugiere opciones similares.
+    Devuelve la respuesta en este formato JSON:
 
     {{
       "sugerencias": "Texto con la recomendación de los autos.",
@@ -75,12 +71,16 @@ async def recomendar_auto(request: AutoRequest):
         {{
           "nombre": "Nombre del auto recomendado",
           "descripcion": "Breve descripción del auto",
-          "imagen_url": "URL de la imagen del auto recomendado"
+          "imagen_url": "URL de la imagen del auto recomendado",
+          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos, comerciales, y quejas mas comunes que presentan
+           otros usuarios de esta marca y modelo de automóvil"
         }},
         {{
           "nombre": "Nombre del segundo auto",
           "descripcion": "Descripción del segundo auto",
-          "imagen_url": "URL de la imagen del segundo auto"
+          "imagen_url": "URL de la imagen del segundo auto",
+          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos, comerciales, y quejas mas comunes que presentan
+           otros usuarios de esta marca y modelo de automóvil"
         }}
       ]
     }}
@@ -107,7 +107,7 @@ async def recomendar_auto(request: AutoRequest):
             raise ValueError("La respuesta de Gemini está vacía.")
 
         try:
-            json_response = json.loads(response.text.strip().replace("```json", "").replace("```", ""))
+            json_response = json.loads(response.text.strip().replace("```json", "").replace("```", ""))  # Convertir respuesta a JSON
         except json.JSONDecodeError:
             raise ValueError(f"Respuesta no válida de Gemini: {response.text.strip()}")
 

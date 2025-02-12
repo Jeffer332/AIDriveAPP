@@ -3,7 +3,7 @@
 import { db } from "./firebase";
 import { doc, updateDoc, setDoc, arrayUnion, onSnapshot } from "firebase/firestore";
 
-// 🔹 Función para guardar mensajes en Firestore
+//Función para guardar mensajes en Firestore
 export const saveMessageToFirestore = async (userId, message) => {
   const chatRef = doc(db, "chats", userId);
   
@@ -32,4 +32,17 @@ export const loadMessagesFromFirestore = (userId, setMessages) => {
       setMessages([]); // Si no hay mensajes, inicia con un array vacío
     }
   });
+};
+
+//Función para borrar todos los mensajes de un usuario en Firestore
+export const clearMessagesFromFirestore = async (userId) => {
+  try {
+    const chatRef = doc(db, "chats", userId);
+    await updateDoc(chatRef, {
+      messages: [],
+    });
+    console.log("Mensajes eliminados correctamente");
+  } catch (error) {
+    //console.error("Error al borrar mensajes:", error);
+  }
 };
