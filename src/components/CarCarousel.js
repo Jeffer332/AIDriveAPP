@@ -4,48 +4,40 @@ import { useState, useEffect } from "react"
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native"
 
 const CarCarousel = ({ title, data, filters, defaultFilter }) => {
-  const [filteredData, setFilteredData] = useState(data)
+  const [filteredData, setFilteredData] = useState([])
   const [selectedFilter, setSelectedFilter] = useState(defaultFilter || filters[0].value)
 
   useEffect(() => {
     filterData(selectedFilter)
-  }, [selectedFilter]) // Update 1: Removed 'data' from useEffect dependencies
-
-  useEffect(() => {
-    filterData()
-  }, []) // Update 2: Added useEffect to call filterData on initial render
+  }, [selectedFilter, data])
 
   const filterData = (filter) => {
     let filtered = [...data]
+
     switch (filter) {
       case "expensive":
-        filtered.sort(
-          (a, b) =>
-            Number.parseFloat(b.Precio.replace(/[^0-9.-]+/g, "")) -
-            Number.parseFloat(a.Precio.replace(/[^0-9.-]+/g, "")),
+        filtered = filtered.sort((a, b) => 
+          parseFloat(b.Precio.replace(/[^\d.-]/g, "")) - parseFloat(a.Precio.replace(/[^\d.-]/g, ""))
         )
         break
       case "cheap":
-        filtered.sort(
-          (a, b) =>
-            Number.parseFloat(a.Precio.replace(/[^0-9.-]+/g, "")) -
-            Number.parseFloat(b.Precio.replace(/[^0-9.-]+/g, "")),
+        filtered = filtered.sort((a, b) => 
+          parseFloat(a.Precio.replace(/[^\d.-]/g, "")) - parseFloat(b.Precio.replace(/[^\d.-]/g, ""))
         )
         break
       case "azuay":
       case "guayas":
       case "pichincha":
-        filtered = filtered.filter((car) => car.Placa && car.Placa.toLowerCase() === filter.toLowerCase())
-        break
-      default:
-        // Si el filtro no coincide, no aplicamos ningún filtro
+        filtered = filtered.filter((car) => car.Placa?.toLowerCase() === filter)
         break
     }
-    setFilteredData(filtered.slice(0, 5))
-  } // Update 3: Modified filterData function
 
-  const renderFilterButtons = () => {
-    return (
+    setFilteredData(filtered.slice(0, 5))
+  }
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
       <View style={styles.filterButtonContainer}>
         {filters.map((filter) => (
           <TouchableOpacity
@@ -57,13 +49,7 @@ const CarCarousel = ({ title, data, filters, defaultFilter }) => {
           </TouchableOpacity>
         ))}
       </View>
-    )
-  }
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
-      {renderFilterButtons()}
       <FlatList
         data={filteredData}
         renderItem={({ item }) => (
@@ -77,7 +63,7 @@ const CarCarousel = ({ title, data, filters, defaultFilter }) => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => item.id || index.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
@@ -96,7 +82,6 @@ const styles = StyleSheet.create({
   },
   filterButtonContainer: {
     flexDirection: "row",
-    justifyContent: "flex-start",
     marginBottom: 10,
   },
   filterButton: {
@@ -119,7 +104,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     elevation: 3,
-    overflow: "hidden",
   },
   cardImage: {
     width: "100%",
@@ -131,7 +115,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    marginBottom: 5,
   },
   cardSubtitle: {
     fontSize: 14,
@@ -146,4 +129,3 @@ const styles = StyleSheet.create({
 })
 
 export default CarCarousel
-

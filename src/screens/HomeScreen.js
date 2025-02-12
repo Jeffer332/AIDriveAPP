@@ -37,8 +37,8 @@ const HomeScreen = () => {
         const data = snapshot.val()
         const autosArray = Object.keys(data).map((key) => ({ id: key, ...data[key] }))
 
-        setAutos(autosArray.slice(0, 10))
-        setAutosSecond(autosArray.slice(10, 20))
+        setAutos(autosArray.slice(0, 10)) // Primer conjunto de autos
+        setAutosSecond(autosArray.slice(10, 20)) // Segundo conjunto de autos
       }
     })
 
@@ -62,6 +62,7 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <Image source={require("../../assets/logo2.png")} style={styles.logo} />
         {userData && (
@@ -75,6 +76,7 @@ const HomeScreen = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Menú desplegable */}
       {menuVisible && (
         <View style={styles.menu}>
           <TouchableOpacity onPress={handleLogout}>
@@ -83,12 +85,15 @@ const HomeScreen = () => {
         </View>
       )}
 
+      {/* Contenido principal */}
       <ScrollView contentContainerStyle={styles.content}>
+        {/* Tarjeta de PatioTuerca */}
         <TouchableOpacity style={styles.card2} onPress={openWebsite}>
           <Image source={require("../../assets/patiotuerca.webp")} style={styles.cardImage} />
           <Text style={styles.cardInfo}>Encuentra lo que necesitas para comprar o vender tu vehículo.</Text>
         </TouchableOpacity>
 
+        {/* Carrusel de Autos por Precio */}
         <CarCarousel
           title="Autos por Precio"
           data={autos}
@@ -99,6 +104,7 @@ const HomeScreen = () => {
           defaultFilter="cheap"
         />
 
+        {/* Carrusel de Autos por Placa */}
         <CarCarousel
           title="Autos por Placa"
           data={autosSecond}
@@ -111,6 +117,7 @@ const HomeScreen = () => {
         />
       </ScrollView>
 
+      {/* Footer */}
       <Footer activeScreen="Home" navigation={navigation} />
     </View>
   )
@@ -171,6 +178,7 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
     padding: 10,
+    marginEnd: 10,
   },
   card2: {
     backgroundColor: "#fff",
@@ -197,4 +205,3 @@ const styles = StyleSheet.create({
 })
 
 export default HomeScreen
-
