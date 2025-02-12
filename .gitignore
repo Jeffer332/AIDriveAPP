@@ -41,6 +41,5 @@ __pycache__/
 
 # Ignorar claves de Firebase (¡Importante por seguridad!)
 firebase_key.json
-Firebase.js
 
-
+**/firebase.js
