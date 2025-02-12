@@ -1,8 +1,10 @@
+// src/screens/CameraScreen.js
 import { CameraView, useCameraPermissions } from "expo-camera";
 import { useState } from "react";
 import { Pressable, Text, View, Alert } from "react-native";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
+<<<<<<< Updated upstream
 import { LinearGradient } from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
 import Footer from "../components/Footer";
@@ -10,6 +12,12 @@ import Header from "../components/Header";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { uploadImageToAPI } from "../services/api";
 import styles from "../styles/CameraScreenStyles"; // 📌 Importamos los estilos separados
+=======
+import { LinearGradient } from 'expo-linear-gradient';
+import * as FileSystem from 'expo-file-system';
+import Footer from '../components/Footer';
+import Header from '../components/Header';
+>>>>>>> Stashed changes
 
 const CameraScreen = ({ navigation }) => {
   const [camera, setCamera] = useState(null);
@@ -34,9 +42,32 @@ const CameraScreen = ({ navigation }) => {
     );
   }
 
+<<<<<<< Updated upstream
   async function convertirImagenABase64(uri) {
     try {
       return await FileSystem.readAsStringAsync(uri, { encoding: FileSystem.EncodingType.Base64 });
+=======
+  async function llamarApi(imageData) {
+    try {
+      const response = await fetch('http://10.116.15.177:8000/upload_image', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData }),
+      });
+
+      const data = await response.json();
+      console.log("Respuesta de la API:", data);
+    } catch (error) {
+      console.error("Error al llamar la API:", error);
+    }
+  }
+
+  async function convertirImagenABase64(uri) {
+    try {
+      return await FileSystem.readAsStringAsync(uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+>>>>>>> Stashed changes
     } catch (error) {
       console.error("Error al convertir imagen a Base64:", error);
       return null;
@@ -95,12 +126,22 @@ const CameraScreen = ({ navigation }) => {
   };
 
   return (
+<<<<<<< Updated upstream
     <LinearGradient colors={["#2A1943", "#38303B", "#120A19"]} style={{ flex: 1 }}>
       <Header />
       <SafeAreaView style={styles.container} edges={["right", "bottom", "left"]}>
+=======
+    <LinearGradient 
+      colors={['#2A1943', '#38303B', '#120A19']} 
+      style={{ flex: 1 }}
+    >
+      <SafeAreaView style={styles.container} edges={['right', 'bottom', 'left']}> {/* Excluye la parte superior */}
+        <Header />
+>>>>>>> Stashed changes
         <View style={styles.cameraContainer}>
           <CameraView style={styles.camera} ref={(ref) => setCamera(ref)} />
         </View>
+<<<<<<< Updated upstream
 
         {loading && (
           <View style={styles.loading}>
@@ -117,10 +158,51 @@ const CameraScreen = ({ navigation }) => {
           </Pressable>
         </View>
 
+=======
+        <Pressable style={styles.cameraButton} onPress={takePhoto}>
+          <Text style={styles.buttonText}>Tomar Foto</Text>
+        </Pressable>
+        {/* Usar el componente Footer */}
+>>>>>>> Stashed changes
         <Footer activeScreen="Camera" navigation={navigation} />
       </SafeAreaView>
     </LinearGradient>
   );
 };
 
+<<<<<<< Updated upstream
 export default CameraScreen;
+=======
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'space-between', // Distribuye el espacio entre el header, la cámara y el footer
+  },
+  cameraContainer: {
+    flex: 1,
+    borderRadius: 80,
+    overflow: "hidden",
+    justifyContent: 'center', // Centra el contenido verticalmente
+    alignItems: 'center', // Centra el contenido horizontalmente
+  },
+  camera: {
+    width: '95%', // Asegúrate de que la cámara ocupe todo el ancho
+    height: '95%', // Asegúrate de que la cámara ocupe todo el alto
+  },
+  cameraButton: {
+    marginBottom: 60, // Espacio entre la cámara y el botón
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: "#8A76B5",
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+    padding: 5,
+  },
+});
+
+export default CameraScreen;
+>>>>>>> Stashed changes
