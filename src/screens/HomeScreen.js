@@ -1,82 +1,69 @@
-// src/screens/HomeScreen.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking, FlatList } from 'react-native';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import { auth } from '../services/firebase';
-import { useNavigation } from '@react-navigation/native';
-import Footer from '../components/Footer'; // Importa el Footer
+"use client"
+
+import { useEffect, useState } from "react"
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking } from "react-native"
+import { getFirestore, doc, getDoc } from "firebase/firestore"
+import { getDatabase, ref, onValue } from "firebase/database"
+import { auth } from "../services/firebase"
+import { useNavigation } from "@react-navigation/native"
+import Footer from "../components/Footer"
+import CarCarousel from "../components/CarCarousel"
 
 const HomeScreen = () => {
-  const [userData, setUserData] = useState(null);
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [autos, setAutos] = useState([]); // Estado para almacenar los autos
-  const [autosSecond, setAutosSecond] = useState([]); // Estado para almacenar los autos del segundo carrusel
-  const db = getDatabase();
-  const firestoreDb = getFirestore();
-  const navigation = useNavigation();
+  const [userData, setUserData] = useState(null)
+  const [menuVisible, setMenuVisible] = useState(false)
+  const [autos, setAutos] = useState([])
+  const [autosSecond, setAutosSecond] = useState([])
+  const db = getDatabase()
+  const firestoreDb = getFirestore()
+  const navigation = useNavigation()
 
   useEffect(() => {
     const fetchUserData = async () => {
-      const user = auth.currentUser ;
+      const user = auth.currentUser
       if (user) {
-        const userDoc = await getDoc(doc(firestoreDb, 'users', user.uid));
+        const userDoc = await getDoc(doc(firestoreDb, "users", user.uid))
         if (userDoc.exists()) {
-          setUserData(userDoc.data());
+          setUserData(userDoc.data())
         }
       }
-    };
+    }
 
-    fetchUserData();
+    fetchUserData()
 
-    // Obtener datos de autos
-    const autosRef = ref(db, 'autos'); // Referencia a la colección "autos"
+    const autosRef = ref(db, "autos")
     const unsubscribe = onValue(autosRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        const autosArray = Object.keys(data) // Obtiene las claves únicas de los autos
-          .slice(9, 12) // Solo los primeros 6 registros
-          .map((key) => ({ id: key, ...data[key] })); // Convierte en un array de objetos
+        const data = snapshot.val()
+        const autosArray = Object.keys(data).map((key) => ({ id: key, ...data[key] }))
 
-        setAutos(autosArray);
+        setAutos(autosArray.slice(0, 10))
+        setAutosSecond(autosArray.slice(10, 20))
       }
-    });
+    })
 
-    // Obtener datos de autos para el segundo carrusel
-    const unsubscribeSecond = onValue(autosRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const autosSecondArray = Object.keys(data) // Obtiene las claves únicas de los autos
-          .slice(15, 19) // Solo los registros del 16 al 18
-          .map((key) => ({ id: key, ...data[key] })); // Convierte en un array de objetos
-
-        setAutosSecond(autosSecondArray);
-      }
-    });
-
-    return () => {
-      unsubscribe(); // Limpieza del listener
-      unsubscribeSecond(); // Limpieza del segundo listener
-    };
-  }, []);
+    return () => unsubscribe()
+  }, [db, firestoreDb])
 
   const handleLogout = () => {
-    auth.signOut().then(() => {
-      navigation.navigate('Welcome'); // Redirigir a la pantalla "Welcome"
-    }).catch((error) => {
-      console.error('Error signing out: ', error);
-    });
-  };
+    auth
+      .signOut()
+      .then(() => {
+        navigation.navigate("Welcome")
+      })
+      .catch((error) => {
+        console.error("Error signing out: ", error)
+      })
+  }
 
   const openWebsite = () => {
-    Linking.openURL('https://ecuador.patiotuerca.com/'); // Cambia esta URL a la página que desees
-  };
+    Linking.openURL("https://ecuador.patiotuerca.com/")
+  }
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <Image source={require('../../assets/logo2.png')} style={styles.logo} />
+        <Image source={require("../../assets/logo2.png")} style={styles.logo} />
         {userData && (
           <View style={styles.userInfo}>
             <Text style={styles.userName}>{`${userData.name} ${userData.surname}`}</Text>
@@ -84,11 +71,10 @@ const HomeScreen = () => {
           </View>
         )}
         <TouchableOpacity onPress={() => setMenuVisible(!menuVisible)}>
-          <Image source={require('../../assets/user.jpg')} style={styles.profileImage} />
+          <Image source={require("../../assets/user.jpg")} style={styles.profileImage} />
         </TouchableOpacity>
       </View>
 
-      {/* Menú de Usuario */}
       {menuVisible && (
         <View style={styles.menu}>
           <TouchableOpacity onPress={handleLogout}>
@@ -97,74 +83,50 @@ const HomeScreen = () => {
         </View>
       )}
 
-      {/* Contenido Principal */}
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Tarjeta de Patio Tuerca */}
         <TouchableOpacity style={styles.card2} onPress={openWebsite}>
-          <Image source={require('../../assets/patiotuerca.webp')} style={styles.cardImage} />
-          <Text style={styles.cardInfo}>
-            Encuentra lo que necesitas para comprar o vender tu vehículo.
-          </Text>
+          <Image source={require("../../assets/patiotuerca.webp")} style={styles.cardImage} />
+          <Text style={styles.cardInfo}>Encuentra lo que necesitas para comprar o vender tu vehículo.</Text>
         </TouchableOpacity>
 
-        {/* Carrusel de autos */}
-        <FlatList
+        <CarCarousel
+          title="Autos por Precio"
           data={autos}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image source={{ uri: item.ImagenURL }} style={styles.cardImage} />
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardTitle}>{`Marca: ${item.Marca || 'N/A'}`}</Text>
-                <Text style={styles.cardSubtitle}>{`Modelo: ${item.Modelo || 'N/A'}`}</Text>
-                <Text style={styles.cardDetails}>{`Año/Kms: ${item.AñoKms || 'N/A'}`}</Text>
-                <Text style={styles.cardPrice}>{`Precio: ${item.Precio || 'N/A'}`}</Text>
-                <Text style={styles.cardPlate}>{`Placa: ${item.Placa || 'N/A'}`}</Text>
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.carousel}
+          filters={[
+            { label: "Mayor", value: "expensive" },
+            { label: "Menor", value: "cheap" },
+          ]}
+          defaultFilter="cheap"
         />
 
-        <FlatList
+        <CarCarousel
+          title="Autos por Placa"
           data={autosSecond}
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <Image source={{ uri: item.ImagenURL }} style={styles.cardImage} />
-              <View style={styles.cardInfo}>
-                <Text style={styles.cardTitle}>{`Marca: ${item.Marca || 'N/A'}`}</Text>
-                <Text style={styles.cardSubtitle}>{`Modelo: ${item.Modelo || 'N/A'}`}</Text>
-                <Text style={styles.cardDetails}>{`Año/Kms: ${item.AñoKms || 'N/A'}`}</Text>
-                <Text style={styles.cardPrice}>{`Precio: ${item.Precio || 'N/A'}`}</Text>
-                <Text style={styles.cardPlate}>{`Placa: ${item.Placa || 'N/A'}`}</Text>
-              </View>
-            </View>
-          )}
-          keyExtractor={(item) => item.id}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.carousel}
+          filters={[
+            { label: "Azuay", value: "azuay" },
+            { label: "Guayas", value: "guayas" },
+            { label: "Pichincha", value: "pichincha" },
+          ]}
+          defaultFilter={userData?.selectedProvince?.toLowerCase() || "pichincha"}
         />
       </ScrollView>
 
-      {/* Usar el componente Footer */}
       <Footer activeScreen="Home" navigation={navigation} />
     </View>
-  );
-};
+  )
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     padding: 10,
-    backgroundColor: '#191A2E',
+    backgroundColor: "#191A2E",
     elevation: 5,
     marginTop: 50,
   },
@@ -174,17 +136,17 @@ const styles = StyleSheet.create({
   },
   userInfo: {
     flex: 1,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     marginRight: 10,
   },
   userName: {
     fontSize: 16,
-    color: '#fff',
-    fontWeight: 'bold',
+    color: "#fff",
+    fontWeight: "bold",
   },
   userProvince: {
     fontSize: 14,
-    color: 'gray',
+    color: "gray",
   },
   profileImage: {
     width: 40,
@@ -192,10 +154,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   menu: {
-    position: 'absolute',
+    position: "absolute",
     right: 10,
     top: 90,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 5,
     elevation: 5,
     padding: 10,
@@ -203,72 +165,36 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     fontSize: 16,
-    color: '#191A2E',
+    color: "#191A2E",
     paddingVertical: 5,
   },
   content: {
     flexGrow: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'center',
     padding: 10,
   },
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 5,
-    padding: 5,
-    marginVertical: 10,
-    alignItems: 'center',
-    marginHorizontal: 5, // Espaciado horizontal entre tarjetas
-    width: 400, // Ancho fijo para las tarjetas
-    height: 335,
-  },
   card2: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 10,
     elevation: 5,
     padding: 5,
     marginVertical: 10,
-    alignItems: 'center',
-    width: 400, // Ancho fijo para las tarjetas
+    alignItems: "center",
+    width: 400,
     height: 270,
   },
   cardImage: {
-    width: '100%',
+    width: "100%",
     height: 200,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   cardInfo: {
     padding: 10,
-    alignItems: 'flex-start',
-    textAlign: 'left', width: '90%'
+    alignItems: "flex-start",
+    textAlign: "left",
+    width: "90%",
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#191A2E',
-  },
-  cardSubtitle: {
-    fontSize: 16,
-    color: '#555',
-  },
-  cardDetails: {
-    fontSize: 14,
-    color: '#777',
-  },
-  cardPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#28a745', // Color verde para el precio
-  },
-  cardPlate: {
-    fontSize: 14,
-    color: '#777',
-  },
-  carousel: {
-    paddingVertical: 10,
-  },
-});
+})
 
-export default HomeScreen;
+export default HomeScreen
+
