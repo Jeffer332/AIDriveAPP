@@ -93,7 +93,6 @@ const LoginScreen = ({ navigation }) => {
       style={LoginScreenStyles.background}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-<<<<<<< Updated upstream
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
@@ -106,23 +105,6 @@ const LoginScreen = ({ navigation }) => {
             blurRadius={1}
           >
             <View style={LoginScreenStyles.overlay} />
-=======
-      <ImageBackground
-        source={require('../../assets/background.jpg')}
-        style={{ height: '50%', width: '100%' }} // Cambia el tamaño de la imagen de fondo a 50%
-      >
-        <View style={LoginScreenStyles.container}>
-          <Image source={require('../../assets/logo.png')} style={LoginScreenStyles.logo} />
-          
-          <View style={LoginScreenStyles.buttonContainer}>
-            <TouchableOpacity style={LoginScreenStyles.button} onPress={() => navigation.navigate('Login')}>
-              <Text style={LoginScreenStyles.buttonText}>Ingreso</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={LoginScreenStyles.button2} onPress={() => navigation.navigate('Register')}>
-              <Text style={LoginScreenStyles.buttonText}>Registro</Text>
-            </TouchableOpacity>
-          </View>
->>>>>>> Stashed changes
 
             <View style={LoginScreenStyles.container}>
               {/* Logo de la app */}

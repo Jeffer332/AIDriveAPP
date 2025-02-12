@@ -110,7 +110,6 @@ const RegisterScreen = ({ navigation }) => {
         style={RegisterScreenStyles.background}
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-<<<<<<< Updated upstream
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
             <ImageBackground
@@ -119,10 +118,6 @@ const RegisterScreen = ({ navigation }) => {
               blurRadius={1}
             >
               <View style={RegisterScreenStyles.overlay} />
-=======
-        <View style={RegisterScreenStyles.container}>
-          <Image source={require('../../assets/logo.png')} style={RegisterScreenStyles.logo} />
->>>>>>> Stashed changes
 
               <View style={RegisterScreenStyles.container}>
                 <Image source={require('../../assets/logo2.png')} style={RegisterScreenStyles.logo} />

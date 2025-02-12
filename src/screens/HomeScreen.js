@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 "use client"
 
 import { useEffect, useState } from "react"
@@ -9,16 +8,6 @@ import { auth } from "../services/firebase"
 import { useNavigation } from "@react-navigation/native"
 import Footer from "../components/Footer"
 import CarCarousel from "../components/CarCarousel"
-=======
-// src/screens/HomeScreen.js
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking, FlatList } from 'react-native';
-import { getFirestore, doc, getDoc } from 'firebase/firestore';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import { auth } from '../services/firebase';
-import { useNavigation } from '@react-navigation/native';
-import Footer from '../components/Footer'; // Importa el Footer
->>>>>>> Stashed changes
 
 const HomeScreen = () => {
   const [userData, setUserData] = useState(null)
@@ -53,28 +42,8 @@ const HomeScreen = () => {
       }
     })
 
-<<<<<<< Updated upstream
     return () => unsubscribe()
   }, [db, firestoreDb])
-=======
-    // Obtener datos de autos para el segundo carrusel
-    const unsubscribeSecond = onValue(autosRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        const autosSecondArray = Object.keys(data) // Obtiene las claves únicas de los autos
-          .slice(15, 19) // Solo los registros del 16 al 18
-          .map((key) => ({ id: key, ...data[key] })); // Convierte en un array de objetos
-
-        setAutosSecond(autosSecondArray);
-      }
-    });
-
-    return () => {
-      unsubscribe(); // Limpieza del listener
-      unsubscribeSecond(); // Limpieza del segundo listener
-    };
-  }, []);
->>>>>>> Stashed changes
 
   const handleLogout = () => {
     auth
@@ -130,12 +99,8 @@ const HomeScreen = () => {
           defaultFilter="cheap"
         />
 
-<<<<<<< Updated upstream
         <CarCarousel
           title="Autos por Placa"
-=======
-        <FlatList
->>>>>>> Stashed changes
           data={autosSecond}
           filters={[
             { label: "Azuay", value: "azuay" },
@@ -146,10 +111,6 @@ const HomeScreen = () => {
         />
       </ScrollView>
 
-<<<<<<< Updated upstream
-=======
-      {/* Usar el componente Footer */}
->>>>>>> Stashed changes
       <Footer activeScreen="Home" navigation={navigation} />
     </View>
   )
@@ -211,33 +172,14 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 10,
   },
-<<<<<<< Updated upstream
-=======
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    elevation: 5,
-    padding: 5,
-    marginVertical: 10,
-    alignItems: 'center',
-    marginHorizontal: 5, // Espaciado horizontal entre tarjetas
-    width: 400, // Ancho fijo para las tarjetas
-    height: 335,
-  },
->>>>>>> Stashed changes
   card2: {
     backgroundColor: "#fff",
     borderRadius: 10,
     elevation: 5,
     padding: 5,
     marginVertical: 10,
-<<<<<<< Updated upstream
     alignItems: "center",
     width: 400,
-=======
-    alignItems: 'center',
-    width: 400, // Ancho fijo para las tarjetas
->>>>>>> Stashed changes
     height: 270,
   },
   cardImage: {
@@ -252,36 +194,7 @@ const styles = StyleSheet.create({
     textAlign: "left",
     width: "90%",
   },
-<<<<<<< Updated upstream
 })
 
 export default HomeScreen
-=======
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#191A2E',
-  },
-  cardSubtitle: {
-    fontSize: 16,
-    color: '#555',
-  },
-  cardDetails: {
-    fontSize: 14,
-    color: '#777',
-  },
-  cardPrice: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#28a745', // Color verde para el precio
-  },
-  cardPlate: {
-    fontSize: 14,
-    color: '#777',
-  },
-  carousel: {
-    paddingVertical: 10,
-  },
-});
->>>>>>> Stashed changes
 
