@@ -9,6 +9,7 @@ import json
 import uvicorn
 from firebase_config import get_autos_data  # Importamos la función para obtener autos desde Firebase
 
+
 # Cargar variables de entorno
 load_dotenv()
 
@@ -145,7 +146,10 @@ def upload_image(data: ImageData):
               {
                 "marca": "Marca del vehículo",
                 "modelo": "Modelo del vehículo",
-                "año": "Año aproximado del vehículo"
+                "año": "Año aproximado del vehículo",
+                "recomendacion": "Genera una recomendación detallada para la compra de este auto usado en Ecuador, considerando su marca, modelo, año y lugar de fabricación; 
+                                evalúa factores clave como confiabilidad, disponibilidad de repuestos, costos de mantenimiento y problemas comunes en este modelo,además, incluye también información relevante sobre el proceso de fabricación y las reparaciones más frecuentes o posibles reparaciones a futuro. 
+                                Sugiere qué aspectos revisar antes de comprar un auto usado, como el historial de accidentes, el estado mecánico y el kilometraje. La recomendación debe ser clara, útil, escríbelo de corrido como si humano atendiera la recomendación y no exceder 150 palabras."
               }
               """
     description_response = modelo.generate_content([{"text": description_prompt},image_content ])

@@ -44,18 +44,9 @@ const AsistenteVirtual = ({ navigation }) => {
     // Recupera la respuesta de la API enviada desde CameraScreen
     if (route.params?.autoDetectado) {
       const { mensaje, detalles } = route.params.autoDetectado;
-
-      //agregamos automáticamente el mensaje del usuario
-      const userMessage = {
-        sender: "user",
-        text: mensaje,
-        timestamp: new Date().toString(),
-      };
-      setMessages((prev) => [...prev, userMessage]);
-
       //simulamos el envío del mensaje llenado automático autmático
-      setInputText(mensaje);
-      sendMessage();
+      //setInputText(mensaje);
+      sendMessage(mensaje);
     }
   }, [route.params?.autoDetectado]);
 

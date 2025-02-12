@@ -81,7 +81,7 @@ const AutoDetectadoScreen = ({ route, navigation }) => {
               onPress={() =>
                 navigation.navigate("AsistenteVirtual", {
                   autoDetectado: {
-                    mensaje: `Hola, ¿tienes disponibilidad de el ${detalles.marca} ${detalles.modelo}?`,
+                    mensaje: `Hola quiero un ${detalles.marca} ${detalles.modelo} que me puedas recomendar`,
                     detalles,
                     enviarAutomaticamente: true,
                   },
