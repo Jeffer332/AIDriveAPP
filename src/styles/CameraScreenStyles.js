@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
-const cameraStyles = StyleSheet.create({
-container: {
+export default StyleSheet.create({
+  container: {
     flex: 1,
     justifyContent: "space-between", // Distribuye el espacio entre el header, la cámara y el footer
   },
@@ -50,10 +50,9 @@ container: {
     width: 70,
     height: 70,
   },
-  perimssion: {
+  permission: { // Corregí el error tipográfico "perimssion" -> "permission"
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
   },
 });
- export default cameraStyles;
