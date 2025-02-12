@@ -54,7 +54,7 @@ const CameraScreen = ({ navigation }) => {
         if (base64Image) {
           console.log("Enviando imagen a la API...");
           const apiResponse = await uploadImageToAPI(`data:image/png;base64,${base64Image}`);
-          console.log("Respuesta recibida desde la API:", apiResponse);
+          //console.log("Respuesta recibida desde la API:", apiResponse);
 
           if (apiResponse?.mensaje === "La imagen no es un vehículo") {
             Alert.alert("No se detectó un vehículo", "Por favor, intente tomar la foto nuevamente", [{ text: "Ok" }]);
@@ -64,27 +64,18 @@ const CameraScreen = ({ navigation }) => {
 
           if (apiResponse && apiResponse.descripcion) {
             try {
-              // Parseamos la descripción que viene como string
               const descripcionJSON = JSON.parse(apiResponse.descripcion);
-              const mensaje = `¿Sabes algo sobre el ${descripcionJSON.marca} ${descripcionJSON.modelo}?`;
-
-              // Navegamos con la información procesada
-              navigation.navigate("AsistenteVirtual", {
-                apiResponse,
-                autoDetectado: {
-                  mensaje,
-                  detalles: descripcionJSON,
-                  enviarAutomaticamente: true,
-                  imagenUri: data.uri,
-                },
+              console.log("Respuesta que se envía a detalles:",descripcionJSON);
+              // Navegamos a la nueva pantalla
+              navigation.navigate("AutoDetectado", {
+                imagenUri: data.uri,
+                detalles: descripcionJSON,
               });
-
+          
               setPhoto(data.uri);
             } catch (parseError) {
               console.error("Error al parsear la descripción:", parseError);
             }
-          } else {
-            console.error("La respuesta de la API no tiene el formato esperado:", apiResponse);
           }
         }
       } catch (error) {

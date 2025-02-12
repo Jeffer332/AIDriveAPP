@@ -13,6 +13,7 @@ import SplashScreen from './src/screens/SplashScreen';
 import AsistenteVirtual from './src/screens/asistente_virtual';
 import CameraScreen from './src/screens/CameraScreen'
 import "./global.css";
+import AutoDetectadoScreen from './src/screens/AutoDetectScreen';
 
 const Stack = createStackNavigator();
 
@@ -34,6 +35,8 @@ const App = () => {
         <Stack.Screen name="AsistenteVirtual" component={AsistenteVirtual} />
          {/* Pantalla de la cámara */}
          <Stack.Screen name="Camera" component={CameraScreen} />
+         {/*Pantalla auto detectado*/}
+         <Stack.Screen name="AutoDetectado" component={AutoDetectadoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
