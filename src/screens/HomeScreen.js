@@ -87,7 +87,7 @@ const HomeScreen = () => {
       {menuVisible && (
         <View style={styles.menu}>
           <TouchableOpacity onPress={handleLogout}>
-            <Text style={styles.menuItem}>Cerrar sesión</Text>
+            <Text style={styles.menuItem}>Cerrar Sesión</Text>
           </TouchableOpacity>
         </View>
       )}
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
-    backgroundColor: "#191A2E",
+    backgroundColor: "#151826",
     elevation: 5,
     marginTop: 50,
   },
@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
   },
   menuItem: {
     fontSize: 16,
-    color: "#191A2E",
+    color: "#151826",
     paddingVertical: 5,
   },
   content: {
@@ -199,9 +199,11 @@ const styles = StyleSheet.create({
     padding: 5,
     marginVertical: 10,
     alignItems: "center",
-    width: 400,
+    width: "100%", 
+    maxWidth: 600, 
     height: 270,
   },
+  
   cardImage: {
     width: "100%",
     height: 200,

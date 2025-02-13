@@ -142,12 +142,7 @@ const LoginScreen = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
 
-              {/* Enlace para recuperar la contraseña */}
-              <View style={LoginScreenStyles.forgotPasswordContainer}>
-                <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                  <Text style={LoginScreenStyles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
-                </TouchableOpacity>
-              </View>
+        
 
               {/* Mensaje de error, solo se muestra si existe un error */}
               {errorMessage ? (

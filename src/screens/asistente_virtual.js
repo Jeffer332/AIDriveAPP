@@ -73,27 +73,23 @@ const AsistenteVirtual = ({ navigation }) => {
 
   // Función para enviar un mensaje
   const sendMessage = async (customMessage = null) => {
-
     //constante para recibir mensaje de forma programática desde la cámara
     const messageToSend = customMessage || inputText;
-
     if (!messageToSend.trim() || isTyping) return; // Evitar envíos vacíos
-
     const user = auth.currentUser; // 🔹 Obtener usuario autenticado
     if (!user) {
       console.error("Usuario no autenticado");
       return;
     }
-
     const userMessage = {
       sender: "user",
       text: messageToSend,
       timestamp: new Date().toISOString(),
     };
 
+
     // Agregar el mensaje del usuario a la lista de mensajes en pantalla
     setMessages((prev) => [...prev, userMessage]);
-
     //Guardar mensaje del usuario en Firestore
     await saveMessageToFirestore(user.uid, userMessage);
 
@@ -166,12 +162,27 @@ const AsistenteVirtual = ({ navigation }) => {
   };
 
   // Función para alternar la reproducción de voz del mensaje
-  const toggleSpeakMessage = (text, index) => {
+  const toggleSpeakMessage = (text, autos, index) => {
     if (speakingMessage === index) {
       Speech.stop();
       setSpeakingMessage(null);
     } else {
-      const cleanText = cleanMarkdownForSpeech(text);
+      let fullText = text; // Contiene las sugerencias iniciales
+
+      if (autos && autos.length > 0) {
+        fullText += " Aquí tienes algunas opciones: ";
+        autos.forEach(auto => {
+          fullText += ` ${auto.nombre}. ${auto.descripcion}. `;
+
+          // Agregar los aspectos a considerar si existen
+          if (auto.puntos_a_considerar) {
+            fullText += ` Aspectos a considerar: ${auto.puntos_a_considerar}. `;
+          }
+        });
+      }
+
+      const cleanText = cleanMarkdownForSpeech(fullText);
+
       Speech.speak(cleanText, {
         language: "es",
         pitch: 1,
@@ -179,9 +190,11 @@ const AsistenteVirtual = ({ navigation }) => {
         onDone: () => setSpeakingMessage(null),
         onStopped: () => setSpeakingMessage(null),
       });
-      setSpeakingMessage(index === speakingMessage ? null : index);
+
+      setSpeakingMessage(index);
     }
   };
+
 
 
   // Función para renderizar cada mensaje en la lista
@@ -221,7 +234,7 @@ const AsistenteVirtual = ({ navigation }) => {
         {item.sender === "bot" && !item.isTyping && (
           <View className="flex-row justify-end mt-2">
             <TouchableOpacity
-              onPress={() => toggleSpeakMessage(item.text, index)}
+              onPress={() => toggleSpeakMessage(item.text, item.autos, index)}
               className="mr-3"
             >
               <Ionicons
@@ -240,34 +253,31 @@ const AsistenteVirtual = ({ navigation }) => {
         {item.autos &&
           item.autos.length > 0 &&
           item.autos.map((auto, i) => (
-            <View key={i} className="mt-2 relative">
-              <Text className="text-xs text-white font-bold">{auto.nombre}</Text>
-              {/*<Text className="text-xs text-gray-300">{auto.descripcion}</Text>*/}
+            <View key={auto.id || `auto-${i}`} className="mt-2 mb-2 p-2">
+              <View className="flex-row items-center">
+                {/* Ícono "+" antes del nombre */}
+                <TouchableOpacity onPress={() => openModal(auto)} className="mr-2">
+                  <Ionicons name="add-circle" size={20} color="#ffffff" />
+                </TouchableOpacity>
+
+                {/* Nombre alineado correctamente */}
+                <Text className="text-sm text-white font-bold flex-shrink">{auto.nombre}</Text>
+              </View>
+
+              <Text className="text-xs text-gray-400">{auto.descripcion}</Text>
 
               {auto.imagen_url && auto.imagen_url.startsWith("http") && (
-                <View className="relative">
-                  {/* Imagen del auto */}
-                  <TouchableOpacity onPress={() => openModal(auto)}>
-                    <Image
-                      source={{ uri: auto.imagen_url }}
-                      className="w-[250px] h-[150px] rounded-lg mt-2"
-                      resizeMode="cover"
-                    />
-                  </TouchableOpacity>
-
-                  {/* Ícono "+" en la esquina superior derecha */}
-                  <TouchableOpacity
-                    onPress={() => openModal(auto)}
-                    className="absolute -top-1 right-3 p-1 bg-transparent"
-                  >
-                    <Ionicons name="add-circle" size={25} color="#ffffff" />
-                    {/*<Text className="text-white text-xs ml-1">Más Info</Text>*/}
-                  </TouchableOpacity>
-                </View>
+                <TouchableOpacity onPress={() => openModal(auto)}>
+                  <Image
+                    source={{ uri: auto.imagen_url }}
+                    className="w-[250px] h-[150px] rounded-lg mt-2"
+                    resizeMode="cover"
+                  />
+                </TouchableOpacity>
               )}
             </View>
-          ))
-        }
+          ))}
+
       </View>
     </View>
   );
@@ -313,7 +323,7 @@ const AsistenteVirtual = ({ navigation }) => {
               ? [{ sender: "bot", text: "escribiendo...", isTyping: true }]
               : []
           )}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.timestamp || index.toString()}
           renderItem={renderMessage}
           contentContainerStyle={{ flexGrow: 1, paddingBottom: 10 }}
           keyboardShouldPersistTaps="handled"
@@ -352,7 +362,7 @@ const AsistenteVirtual = ({ navigation }) => {
 
         {/* Modal emergente para detalles del auto */}
         <Modal animationType="slide" transparent={true} visible={modalVisible} onRequestClose={closeModal}>
-          <View className="flex-1 justify-center items-center bg-black opacity-80">
+          <View className="flex-1 justify-center items-center bg-black opacity-81">
             <View className="bg-[#2e2e52] p-5 rounded-xl w-80 max-h-[80%] relative">
 
               {/* Botón de cierre en la esquina superior derecha */}
@@ -363,7 +373,7 @@ const AsistenteVirtual = ({ navigation }) => {
               {selectedAuto && (
                 <>
                   <Text className="text-white text-lg font-bold">{selectedAuto.nombre}</Text>
-                  <Text className="text-gray-300 text-sm mt-1">{selectedAuto.descripcion}</Text>
+                  <Text className="text-gray-400 text-xs mt-1">{selectedAuto.descripcion}</Text>
 
                   {selectedAuto.imagen_url && (
                     <Image
@@ -372,16 +382,13 @@ const AsistenteVirtual = ({ navigation }) => {
                       resizeMode="cover"
                     />
                   )}
-                  <Text className="text-gray-300 text-sm mt-3">Aspectos a considerar:</Text>
+                  <Text className="text-gray-300 text-sm mt-3 font-bold">Aspectos a considerar:</Text>
                   <Text className="text-white text-xs mt-1">{selectedAuto.puntos_a_considerar}</Text>
                 </>
               )}
             </View>
           </View>
         </Modal>
-
-
-
       </SafeAreaView>
     </KeyboardAvoidingView>
   );

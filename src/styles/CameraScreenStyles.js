@@ -27,7 +27,7 @@ export default StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 1,
-    borderColor: "#6A0DAD",
+    borderColor: "#0583F2",
   },
   buttonText: {
     color: "#fff",

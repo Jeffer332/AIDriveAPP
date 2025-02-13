@@ -33,13 +33,13 @@ const SplashScreen = ({ navigation }) => {
           </Text>
         </View>
 
-        {/* Botón de continuar - Subido un poco */}
+        {/* Botón de continuar */}
         <TouchableOpacity 
           onPress={() => navigation.navigate('AsistenteVirtual')} 
           style={{
             width: 64,
             height: 64,
-            backgroundColor: '#8A76B5',
+            backgroundColor: '#0583F2',
             borderRadius: 32,
             alignItems: 'center',
             justifyContent: 'center',

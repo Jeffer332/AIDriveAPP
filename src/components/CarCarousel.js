@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   selectedFilterButton: {
-    backgroundColor: "#28a745",
+    backgroundColor: "#0583F2",
   },
   filterButtonText: {
     color: "#fff",
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   cardPrice: {
     fontSize: 16,
     fontWeight: "bold",
-    color: "#28a745",
+    color: "#0583F2",
     marginTop: 5,
   },
 })

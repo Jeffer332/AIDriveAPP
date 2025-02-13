@@ -1,5 +1,5 @@
 // src/services/api.js
-const API_BASE_URL = 'http://192.168.100.8:8000';
+const API_BASE_URL = 'http://192.168.0.7:8000';
 export const getAutoRecommendation = async (texto) => {
   const url = 'http://192.168.0.7:8000/recomendar';
   const response = await fetch(url, {
