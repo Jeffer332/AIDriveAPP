@@ -73,14 +73,14 @@ async def recomendar_auto(request: AutoRequest):
           "nombre": "Nombre del auto recomendado",
           "descripcion": "Breve descripción del auto",
           "imagen_url": "URL de la imagen del auto recomendado",
-          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos, comerciales, y quejas mas comunes que presentan
+          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos y comerciales mas comunes que presentan
            otros usuarios de esta marca y modelo de automóvil"
         }},
         {{
           "nombre": "Nombre del segundo auto",
           "descripcion": "Descripción del segundo auto",
           "imagen_url": "URL de la imagen del segundo auto",
-          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos, comerciales, y quejas mas comunes que presentan
+          "puntos_a_considerar": "Aconseja al usuario de manera clara en base a los problemas técnicos, comerciales mas comunes que presentan
            otros usuarios de esta marca y modelo de automóvil"
         }}
       ]
