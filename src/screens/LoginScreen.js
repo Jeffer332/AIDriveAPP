@@ -56,10 +56,23 @@ const LoginScreen = ({ navigation }) => {
     }*/
 
     // Validar el formato del correo
-    if (!isValidEmail(email)) {
-      setErrorMessage("Por favor, introduce un correo válido.");
+    const validateEmail = (email) => {
+      if (!email?.trim()) return "Por favor, introduce un correo electrónico.";
+      if (!isValidEmail(email)) return "Por favor, introduce un correo válido.";
+      return null; // No hay error
+    };
+    
+    // Uso
+    const errorMessage = validateEmail(email);
+    if (errorMessage) {
+      setErrorMessage(errorMessage);
       return;
     }
+    
+    /*if (!isValidEmail(email)) {
+      setErrorMessage("Por favor, introduce un correo válido.");
+      return;
+    }*/
 
     setLoading(true); // Mostrar indicador de carga
 
