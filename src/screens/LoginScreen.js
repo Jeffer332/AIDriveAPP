@@ -45,16 +45,34 @@ const LoginScreen = ({ navigation }) => {
     setErrorMessage(''); // Limpiar mensajes de error antes de la validación
 
     // Verificar que los campos no estén vacíos
-    if (!email || !password) {
+    if ([email, password].some(field => !field?.trim())) {
       setErrorMessage("Por favor, completa todos los campos.");
       return;
     }
+    
+    /*if (!email || !password) {
+      setErrorMessage("Por favor, completa todos los campos.");
+      return;
+    }*/
 
     // Validar el formato del correo
-    if (!isValidEmail(email)) {
-      setErrorMessage("Por favor, introduce un correo válido.");
+    const validateEmail = (email) => {
+      if (!email?.trim()) return "Por favor, introduce un correo electrónico.";
+      if (!isValidEmail(email)) return "Por favor, introduce un correo válido.";
+      return null; // No hay error
+    };
+    
+    // Uso
+    const errorMessage = validateEmail(email);
+    if (errorMessage) {
+      setErrorMessage(errorMessage);
       return;
     }
+    
+    /*if (!isValidEmail(email)) {
+      setErrorMessage("Por favor, introduce un correo válido.");
+      return;
+    }*/
 
     setLoading(true); // Mostrar indicador de carga
 
