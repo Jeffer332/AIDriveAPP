@@ -45,10 +45,15 @@ const LoginScreen = ({ navigation }) => {
     setErrorMessage(''); // Limpiar mensajes de error antes de la validación
 
     // Verificar que los campos no estén vacíos
-    if (!email || !password) {
+    if ([email, password].some(field => !field?.trim())) {
       setErrorMessage("Por favor, completa todos los campos.");
       return;
     }
+    
+    /*if (!email || !password) {
+      setErrorMessage("Por favor, completa todos los campos.");
+      return;
+    }*/
 
     // Validar el formato del correo
     if (!isValidEmail(email)) {
