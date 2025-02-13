@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking } from "react-native"
+import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Linking, ActivityIndicator } from "react-native"
 import { getFirestore, doc, getDoc } from "firebase/firestore"
 import { getDatabase, ref, onValue } from "firebase/database"
 import { auth } from "../services/firebase"
@@ -13,7 +13,7 @@ const HomeScreen = () => {
   const [userData, setUserData] = useState(null)
   const [menuVisible, setMenuVisible] = useState(false)
   const [autos, setAutos] = useState([])
-  const [autosSecond, setAutosSecond] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
   const db = getDatabase()
   const firestoreDb = getFirestore()
   const navigation = useNavigation()
@@ -36,10 +36,9 @@ const HomeScreen = () => {
       if (snapshot.exists()) {
         const data = snapshot.val()
         const autosArray = Object.keys(data).map((key) => ({ id: key, ...data[key] }))
-
-        setAutos(autosArray.slice(0, 10)) // Primer conjunto de autos
-        setAutosSecond(autosArray.slice(10, 20)) // Segundo conjunto de autos
+        setAutos(autosArray)
       }
+      setIsLoading(false)
     })
 
     return () => unsubscribe()
@@ -58,6 +57,14 @@ const HomeScreen = () => {
 
   const openWebsite = () => {
     Linking.openURL("https://ecuador.patiotuerca.com/")
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    )
   }
 
   return (
@@ -107,7 +114,7 @@ const HomeScreen = () => {
         {/* Carrusel de Autos por Placa */}
         <CarCarousel
           title="Autos por Placa"
-          data={autosSecond}
+          data={autos}
           filters={[
             { label: "Otros", value: "otro" },
             { label: "Guayas", value: "guayas" },
@@ -127,6 +134,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#f5f5f5",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   header: {
     flexDirection: "row",
@@ -205,3 +217,4 @@ const styles = StyleSheet.create({
 })
 
 export default HomeScreen
+

@@ -1,38 +1,65 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from "react-native"
+import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from "react-native"
 
 const CarCarousel = ({ title, data, filters, defaultFilter }) => {
   const [filteredData, setFilteredData] = useState([])
   const [selectedFilter, setSelectedFilter] = useState(defaultFilter || filters[0].value)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    filterData(selectedFilter)
-  }, [selectedFilter, data])
+    if (data && data.length > 0) {
+      filterData(selectedFilter)
+    }
+  }, [data, selectedFilter])
 
   const filterData = (filter) => {
-    let filtered = [...data]
+    setIsLoading(true)
+    let filtered = data.filter(
+      (car) =>
+        car.Marca !== "N/A" &&
+        car.Modelo !== "N/A" &&
+        car.Placa !== "N/A" &&
+        car.Recorrido !== "N/A" &&
+        car.Precio !== "N/A" &&
+        car.ImagenURL,
+    )
 
     switch (filter) {
       case "expensive":
-        filtered = filtered.sort((a, b) => 
-          parseFloat(b.Precio.replace(/[^\d.-]/g, "")) - parseFloat(a.Precio.replace(/[^\d.-]/g, ""))
+        filtered = filtered.sort(
+          (a, b) =>
+            Number.parseFloat(b.Precio.replace(/[^\d.-]/g, "")) - Number.parseFloat(a.Precio.replace(/[^\d.-]/g, "")),
         )
         break
       case "cheap":
-        filtered = filtered.sort((a, b) => 
-          parseFloat(a.Precio.replace(/[^\d.-]/g, "")) - parseFloat(b.Precio.replace(/[^\d.-]/g, ""))
+        filtered = filtered.sort(
+          (a, b) =>
+            Number.parseFloat(a.Precio.replace(/[^\d.-]/g, "")) - Number.parseFloat(b.Precio.replace(/[^\d.-]/g, "")),
         )
         break
-      case "cuenca":
       case "guayas":
       case "pichincha":
-        filtered = filtered.filter((car) => car.Placa?.toLowerCase() === filter)
+        filtered = filtered.filter((car) => car.Placa.toLowerCase().includes(filter))
+        break
+      case "otro":
+        filtered = filtered.filter(
+          (car) => !["guayas", "pichincha"].some((province) => car.Placa.toLowerCase().includes(province)),
+        )
         break
     }
 
     setFilteredData(filtered.slice(0, 5))
+    setIsLoading(false)
+  }
+
+  if (isLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    )
   }
 
   return (
@@ -56,14 +83,14 @@ const CarCarousel = ({ title, data, filters, defaultFilter }) => {
           <View style={styles.card}>
             <Image source={{ uri: item.ImagenURL }} style={styles.cardImage} />
             <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{`${item.Marca || "N/A"} ${item.Modelo || "N/A"}`}</Text>
-              <Text style={styles.cardSubtitle}>{`Placa: ${item.Placa || "N/A"}`}</Text>
-              <Text style={styles.cardSubtitle}>{`Recorrido: ${item.Recorrido || "N/A"}`}</Text>
-              <Text style={styles.cardPrice}>{item.Precio || "N/A"}</Text>
+              <Text style={styles.cardTitle}>{`${item.Marca} ${item.Modelo}`}</Text>
+              <Text style={styles.cardSubtitle}>{`Placa: ${item.Placa}`}</Text>
+              <Text style={styles.cardSubtitle}>{`Recorrido: ${item.Recorrido}`}</Text>
+              <Text style={styles.cardPrice}>{item.Precio}</Text>
             </View>
           </View>
         )}
-        keyExtractor={(item, index) => item.id || index.toString()}
+        keyExtractor={(item) => item.id.toString()}
         horizontal
         showsHorizontalScrollIndicator={false}
       />
@@ -73,6 +100,12 @@ const CarCarousel = ({ title, data, filters, defaultFilter }) => {
 
 const styles = StyleSheet.create({
   container: {
+    marginVertical: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
     marginVertical: 20,
   },
   title: {
@@ -108,6 +141,8 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: 150,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   cardContent: {
     padding: 10,
@@ -129,3 +164,4 @@ const styles = StyleSheet.create({
 })
 
 export default CarCarousel
+
