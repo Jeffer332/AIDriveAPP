@@ -25,7 +25,7 @@ const CarCarousel = ({ title, data, filters, defaultFilter }) => {
           parseFloat(a.Precio.replace(/[^\d.-]/g, "")) - parseFloat(b.Precio.replace(/[^\d.-]/g, ""))
         )
         break
-      case "azuay":
+      case "cuenca":
       case "guayas":
       case "pichincha":
         filtered = filtered.filter((car) => car.Placa?.toLowerCase() === filter)

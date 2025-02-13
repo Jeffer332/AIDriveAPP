@@ -109,7 +109,7 @@ const HomeScreen = () => {
           title="Autos por Placa"
           data={autosSecond}
           filters={[
-            { label: "Azuay", value: "azuay" },
+            { label: "Otros", value: "otro" },
             { label: "Guayas", value: "guayas" },
             { label: "Pichincha", value: "pichincha" },
           ]}
